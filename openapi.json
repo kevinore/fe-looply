@@ -1,0 +1,3753 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Loyalty & Sales API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Api Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/auth/login": {
+      "post": {
+        "tags": [
+          "op: auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_op_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorMeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/auth/logout": {
+      "post": {
+        "tags": [
+          "op: auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_op_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/op/auth/me": {
+      "get": {
+        "tags": [
+          "op: auth"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_op_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorMeOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/workdays/current": {
+      "get": {
+        "tags": [
+          "op: workdays"
+        ],
+        "summary": "Current",
+        "operationId": "current_api_op_workdays_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/WorkdayOut"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Current Api Op Workdays Current Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/workdays/open": {
+      "post": {
+        "tags": [
+          "op: workdays"
+        ],
+        "summary": "Open Workday",
+        "description": "Opens today's workday, or reopens it (200) if it was closed earlier today.",
+        "operationId": "open_workday_api_op_workdays_open_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkdayOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/workdays/current/close": {
+      "post": {
+        "tags": [
+          "op: workdays"
+        ],
+        "summary": "Close Workday",
+        "operationId": "close_workday_api_op_workdays_current_close_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkdaySummaryOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/workdays/{workday_id}/sales": {
+      "get": {
+        "tags": [
+          "op: workdays"
+        ],
+        "summary": "Workday Sales",
+        "description": "Every sale of the workday, newest first, with lines and customer.",
+        "operationId": "workday_sales_api_op_workdays__workday_id__sales_get",
+        "parameters": [
+          {
+            "name": "workday_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workday Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkdaySalesPageOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/products": {
+      "get": {
+        "tags": [
+          "op: products"
+        ],
+        "summary": "List Products",
+        "description": "Active products of the business, by sort_order, with their options (11.4).",
+        "operationId": "list_products_api_op_products_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Products Api Op Products Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales": {
+      "post": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Create Sale",
+        "operationId": "create_sale_api_op_sales_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaleCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}": {
+      "get": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Get Sale",
+        "operationId": "get_sale_api_op_sales__sale_id__get",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}/status": {
+      "get": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Sale Status",
+        "operationId": "sale_status_api_op_sales__sale_id__status_get",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleStatusOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}/link": {
+      "post": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Link",
+        "operationId": "link_api_op_sales__sale_id__link_post",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}/unlink": {
+      "post": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Unlink",
+        "operationId": "unlink_api_op_sales__sale_id__unlink_post",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}/void": {
+      "post": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Void",
+        "operationId": "void_api_op_sales__sale_id__void_post",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoidIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/sales/{sale_id}/redeem-prize": {
+      "post": {
+        "tags": [
+          "op: sales"
+        ],
+        "summary": "Redeem Prize",
+        "operationId": "redeem_prize_api_op_sales__sale_id__redeem_prize_post",
+        "parameters": [
+          {
+            "name": "sale_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Sale Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RedeemPrizeIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/customers/search": {
+      "get": {
+        "tags": [
+          "op: customers"
+        ],
+        "summary": "Search",
+        "operationId": "search_api_op_customers_search_get",
+        "parameters": [
+          {
+            "name": "last4",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$",
+              "title": "Last4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerSearchOut"
+                  },
+                  "title": "Response Search Api Op Customers Search Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/customers/{customer_id}": {
+      "get": {
+        "tags": [
+          "op: customers"
+        ],
+        "summary": "Detail",
+        "operationId": "detail_api_op_customers__customer_id__get",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Customer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/prizes/pending": {
+      "get": {
+        "tags": [
+          "op: prizes"
+        ],
+        "summary": "Pending",
+        "operationId": "pending_api_op_prizes_pending_get",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "expiring",
+                "free",
+                "all"
+              ],
+              "type": "string",
+              "default": "all",
+              "title": "Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PendingPrizeOut"
+                  },
+                  "title": "Response Pending Api Op Prizes Pending Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/prizes/catalog": {
+      "get": {
+        "tags": [
+          "op: prizes"
+        ],
+        "summary": "Catalog",
+        "operationId": "catalog_api_op_prizes_catalog_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogPrizeOut"
+                  },
+                  "type": "array",
+                  "title": "Response Catalog Api Op Prizes Catalog Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/stats/workdays/{workday_id}": {
+      "get": {
+        "tags": [
+          "op: stats"
+        ],
+        "summary": "Workday Stats",
+        "operationId": "workday_stats_api_op_stats_workdays__workday_id__get",
+        "parameters": [
+          {
+            "name": "workday_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workday Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkdayStatsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/stats/history": {
+      "get": {
+        "tags": [
+          "op: stats"
+        ],
+        "summary": "History",
+        "operationId": "history_api_op_stats_history_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryStatsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/export/sales.csv": {
+      "get": {
+        "tags": [
+          "op: stats"
+        ],
+        "summary": "Export Sales",
+        "operationId": "export_sales_api_op_export_sales_csv_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/op/events": {
+      "post": {
+        "tags": [
+          "op: events"
+        ],
+        "summary": "Post Event",
+        "operationId": "post_event_api_op_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/business": {
+      "get": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Business",
+        "operationId": "business_api_c_business_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicBusinessOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/claims/{token}": {
+      "get": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Claim Preview",
+        "operationId": "claim_preview_api_c_claims__token__get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimPreviewOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/register": {
+      "post": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Register",
+        "operationId": "register_api_c_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/identify/confirm": {
+      "post": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Identify Confirm",
+        "operationId": "identify_confirm_api_c_identify_confirm_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdentifyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/me": {
+      "get": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_c_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/claim": {
+      "post": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Claim",
+        "operationId": "claim_api_c_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/history": {
+      "get": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "History",
+        "operationId": "history_api_c_history_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/HistorySale"
+                  },
+                  "type": "array",
+                  "title": "Response History Api C History Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/logout": {
+      "post": {
+        "tags": [
+          "c: identity"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_c_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/c/wheel": {
+      "get": {
+        "tags": [
+          "c: wheel"
+        ],
+        "summary": "Wheel",
+        "description": "Active segments in sort_order, WITHOUT weights (R12).",
+        "operationId": "wheel_api_c_wheel_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WheelOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/spins/{spin_id}/spin": {
+      "post": {
+        "tags": [
+          "c: wheel"
+        ],
+        "summary": "Spin",
+        "operationId": "spin_api_c_spins__spin_id__spin_post",
+        "parameters": [
+          {
+            "name": "spin_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Spin Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpinResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/prizes/{prize_award_id}": {
+      "get": {
+        "tags": [
+          "c: wheel"
+        ],
+        "summary": "Prize Detail",
+        "operationId": "prize_detail_api_c_prizes__prize_award_id__get",
+        "parameters": [
+          {
+            "name": "prize_award_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Prize Award Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrizeDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/c/events": {
+      "post": {
+        "tags": [
+          "c: events"
+        ],
+        "summary": "Post Event",
+        "operationId": "post_event_api_c_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivePrizeBrief": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "type",
+          "expires_at"
+        ],
+        "title": "ActivePrizeBrief"
+      },
+      "AwardBrief": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "short_label",
+          "type",
+          "expires_at"
+        ],
+        "title": "AwardBrief"
+      },
+      "CardOut": {
+        "properties": {
+          "customer": {
+            "$ref": "#/components/schemas/SaleCustomerOut"
+          },
+          "purchases": {
+            "type": "integer",
+            "title": "Purchases"
+          },
+          "milestone_every": {
+            "type": "integer",
+            "title": "Milestone Every"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress"
+          },
+          "purchases_to_next_spin": {
+            "type": "integer",
+            "title": "Purchases To Next Spin"
+          },
+          "available_spins": {
+            "items": {
+              "$ref": "#/components/schemas/SpinBrief"
+            },
+            "type": "array",
+            "title": "Available Spins"
+          },
+          "active_prizes": {
+            "items": {
+              "$ref": "#/components/schemas/CardPrizeOut"
+            },
+            "type": "array",
+            "title": "Active Prizes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "customer",
+          "purchases",
+          "milestone_every",
+          "progress",
+          "purchases_to_next_spin",
+          "available_spins",
+          "active_prizes"
+        ],
+        "title": "CardOut",
+        "description": "build_card() (11.7)."
+      },
+      "CardPrizeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "awarded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Awarded At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "short_label",
+          "type",
+          "awarded_at",
+          "expires_at"
+        ],
+        "title": "CardPrizeOut"
+      },
+      "CatalogPrizeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value"
+          },
+          "max_value_cop": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Value Cop"
+          },
+          "weight": {
+            "type": "integer",
+            "title": "Weight"
+          },
+          "expires_days": {
+            "type": "integer",
+            "title": "Expires Days"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "short_label",
+          "type",
+          "value",
+          "max_value_cop",
+          "weight",
+          "expires_days",
+          "color",
+          "sort_order",
+          "active"
+        ],
+        "title": "CatalogPrizeOut",
+        "description": "Owner only: includes weights."
+      },
+      "ClaimIn": {
+        "properties": {
+          "claim_token": {
+            "type": "string",
+            "title": "Claim Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "claim_token"
+        ],
+        "title": "ClaimIn"
+      },
+      "ClaimPreviewOut": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "claimable",
+              "already_claimed",
+              "expired",
+              "voided",
+              "not_found"
+            ],
+            "title": "State"
+          },
+          "sale": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PreviewSale"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "business": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PreviewBusiness"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "state",
+          "sale",
+          "business"
+        ],
+        "title": "ClaimPreviewOut"
+      },
+      "ClaimResultOut": {
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardOut"
+          },
+          "counted": {
+            "type": "boolean",
+            "title": "Counted"
+          },
+          "new_spins": {
+            "items": {
+              "$ref": "#/components/schemas/SpinBrief"
+            },
+            "type": "array",
+            "title": "New Spins"
+          },
+          "stamp_eligible": {
+            "type": "boolean",
+            "title": "Stamp Eligible"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card",
+          "counted",
+          "new_spins",
+          "stamp_eligible"
+        ],
+        "title": "ClaimResultOut"
+      },
+      "CustomerDetailOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "phone_last4": {
+            "type": "string",
+            "title": "Phone Last4"
+          },
+          "purchases": {
+            "type": "integer",
+            "title": "Purchases"
+          },
+          "milestone_every": {
+            "type": "integer",
+            "title": "Milestone Every"
+          },
+          "active_prizes": {
+            "items": {
+              "$ref": "#/components/schemas/OpCustomerPrizeOut"
+            },
+            "type": "array",
+            "title": "Active Prizes"
+          },
+          "sales": {
+            "items": {
+              "$ref": "#/components/schemas/CustomerSaleBrief"
+            },
+            "type": "array",
+            "title": "Sales"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alias",
+          "phone_last4",
+          "purchases",
+          "milestone_every",
+          "active_prizes",
+          "sales"
+        ],
+        "title": "CustomerDetailOut"
+      },
+      "CustomerSaleBrief": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "total_cop": {
+            "type": "integer",
+            "title": "Total Cop"
+          },
+          "payment_method": {
+            "type": "string",
+            "title": "Payment Method"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Paid At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "total_cop",
+          "payment_method",
+          "paid_at"
+        ],
+        "title": "CustomerSaleBrief"
+      },
+      "CustomerSearchOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "phone_last4": {
+            "type": "string",
+            "title": "Phone Last4"
+          },
+          "purchases": {
+            "type": "integer",
+            "title": "Purchases"
+          },
+          "active_prizes_count": {
+            "type": "integer",
+            "title": "Active Prizes Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alias",
+          "phone_last4",
+          "purchases",
+          "active_prizes_count"
+        ],
+        "title": "CustomerSearchOut"
+      },
+      "EventIn": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "sale_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sale Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          },
+          "client_ts": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Ts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "title": "EventIn"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HistoryItem": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "qty": {
+            "type": "integer",
+            "title": "Qty"
+          },
+          "unit_price_cop": {
+            "type": "integer",
+            "title": "Unit Price Cop"
+          },
+          "discount_cop": {
+            "type": "integer",
+            "title": "Discount Cop"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/SaleItemOptionOut"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "qty",
+          "unit_price_cop",
+          "discount_cop",
+          "options"
+        ],
+        "title": "HistoryItem"
+      },
+      "HistorySale": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Paid At"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total_cop": {
+            "type": "integer",
+            "title": "Total Cop"
+          },
+          "prize_used": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prize Used"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "paid_at",
+          "items",
+          "total_cop",
+          "prize_used"
+        ],
+        "title": "HistorySale"
+      },
+      "HistoryStatsOut": {
+        "properties": {
+          "workdays": {
+            "items": {
+              "$ref": "#/components/schemas/WorkdayRatesOut"
+            },
+            "type": "array",
+            "title": "Workdays"
+          },
+          "products": {
+            "items": {
+              "$ref": "#/components/schemas/ProductStatsOut"
+            },
+            "type": "array",
+            "title": "Products"
+          },
+          "hourly_average": {
+            "items": {
+              "$ref": "#/components/schemas/HourlyAverageOut"
+            },
+            "type": "array",
+            "title": "Hourly Average"
+          },
+          "cost_incomplete": {
+            "type": "boolean",
+            "title": "Cost Incomplete"
+          },
+          "margin_cop": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workdays",
+          "products",
+          "hourly_average",
+          "cost_incomplete",
+          "margin_cop"
+        ],
+        "title": "HistoryStatsOut"
+      },
+      "HourlyAverageOut": {
+        "properties": {
+          "local_hour": {
+            "type": "integer",
+            "title": "Local Hour"
+          },
+          "avg_sales": {
+            "type": "number",
+            "title": "Avg Sales"
+          },
+          "avg_revenue_cop": {
+            "type": "number",
+            "title": "Avg Revenue Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "local_hour",
+          "avg_sales",
+          "avg_revenue_cop"
+        ],
+        "title": "HourlyAverageOut"
+      },
+      "HourlyOut": {
+        "properties": {
+          "local_hour": {
+            "type": "integer",
+            "title": "Local Hour"
+          },
+          "sales": {
+            "type": "integer",
+            "title": "Sales"
+          },
+          "revenue_cop": {
+            "type": "integer",
+            "title": "Revenue Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "local_hour",
+          "sales",
+          "revenue_cop"
+        ],
+        "title": "HourlyOut"
+      },
+      "IdentifyIn": {
+        "properties": {
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "claim_token": {
+            "type": "string",
+            "title": "Claim Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phone",
+          "claim_token"
+        ],
+        "title": "IdentifyIn"
+      },
+      "LinkIn": {
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Customer Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "customer_id"
+        ],
+        "title": "LinkIn"
+      },
+      "LoginIn": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginIn"
+      },
+      "OpCustomerPrizeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "awarded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Awarded At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value"
+          },
+          "max_value_cop": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Value Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "short_label",
+          "type",
+          "awarded_at",
+          "expires_at",
+          "value",
+          "max_value_cop"
+        ],
+        "title": "OpCustomerPrizeOut",
+        "description": "Active prize as seen by the operator: includes the catalog value so the\nsale screen can show an estimated discount (the sale still computes it)."
+      },
+      "OperatorBusinessOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "branding": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Branding"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "branding"
+        ],
+        "title": "OperatorBusinessOut"
+      },
+      "OperatorMeOut": {
+        "properties": {
+          "operator": {
+            "$ref": "#/components/schemas/OperatorOut"
+          },
+          "business": {
+            "$ref": "#/components/schemas/OperatorBusinessOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "operator",
+          "business"
+        ],
+        "title": "OperatorMeOut"
+      },
+      "OperatorOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "role"
+        ],
+        "title": "OperatorOut"
+      },
+      "OptionChoiceOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "price_delta_cop": {
+            "type": "integer",
+            "title": "Price Delta Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "price_delta_cop"
+        ],
+        "title": "OptionChoiceOut"
+      },
+      "OptionGroupOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "min_select": {
+            "type": "integer",
+            "title": "Min Select"
+          },
+          "max_select": {
+            "type": "integer",
+            "title": "Max Select"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/OptionChoiceOut"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "min_select",
+          "max_select",
+          "options"
+        ],
+        "title": "OptionGroupOut",
+        "description": "Choose between min_select and max_select options (e.g. \"Base\": 1 of 2)."
+      },
+      "OptionSalesOut": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "group_name": {
+            "type": "string",
+            "title": "Group Name"
+          },
+          "option_name": {
+            "type": "string",
+            "title": "Option Name"
+          },
+          "units": {
+            "type": "integer",
+            "title": "Units"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "group_name",
+          "option_name",
+          "units"
+        ],
+        "title": "OptionSalesOut",
+        "description": "Units sold with one option (e.g. the flavor \"Coco\"), by product category."
+      },
+      "PendingPrizeOut": {
+        "properties": {
+          "prize_award_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Prize Award Id"
+          },
+          "customer_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Customer Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "phone_last4": {
+            "type": "string",
+            "title": "Phone Last4"
+          },
+          "prize_name": {
+            "type": "string",
+            "title": "Prize Name"
+          },
+          "prize_type": {
+            "type": "string",
+            "title": "Prize Type"
+          },
+          "awarded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Awarded At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prize_award_id",
+          "customer_id",
+          "alias",
+          "phone_last4",
+          "prize_name",
+          "prize_type",
+          "awarded_at",
+          "expires_at"
+        ],
+        "title": "PendingPrizeOut",
+        "description": "One row of v_pending_prizes."
+      },
+      "PreviewBusiness": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "branding": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Branding"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "branding"
+        ],
+        "title": "PreviewBusiness"
+      },
+      "PreviewSale": {
+        "properties": {
+          "items_count": {
+            "type": "integer",
+            "title": "Items Count"
+          },
+          "total_cop": {
+            "type": "integer",
+            "title": "Total Cop"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Paid At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items_count",
+          "total_cop",
+          "paid_at"
+        ],
+        "title": "PreviewSale"
+      },
+      "PrizeDetailOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "redeemed",
+              "void",
+              "expired"
+            ],
+            "title": "Status"
+          },
+          "awarded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Awarded At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "redeemed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Redeemed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "short_label",
+          "type",
+          "status",
+          "awarded_at",
+          "expires_at",
+          "redeemed_at"
+        ],
+        "title": "PrizeDetailOut"
+      },
+      "ProductOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "price_cop": {
+            "type": "integer",
+            "title": "Price Cop"
+          },
+          "photo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Photo Url"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "prize_eligible": {
+            "type": "boolean",
+            "title": "Prize Eligible"
+          },
+          "option_groups": {
+            "items": {
+              "$ref": "#/components/schemas/OptionGroupOut"
+            },
+            "type": "array",
+            "title": "Option Groups"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "price_cop",
+          "photo_url",
+          "description",
+          "category",
+          "prize_eligible",
+          "option_groups"
+        ],
+        "title": "ProductOut"
+      },
+      "ProductStatsOut": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Product Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "units": {
+            "type": "integer",
+            "title": "Units"
+          },
+          "gross_cop": {
+            "type": "integer",
+            "title": "Gross Cop"
+          },
+          "discount_cop": {
+            "type": "integer",
+            "title": "Discount Cop"
+          },
+          "net_cop": {
+            "type": "integer",
+            "title": "Net Cop"
+          },
+          "cost_incomplete": {
+            "type": "boolean",
+            "title": "Cost Incomplete"
+          },
+          "margin_cop": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "label",
+          "units",
+          "gross_cop",
+          "discount_cop",
+          "net_cop",
+          "cost_incomplete",
+          "margin_cop"
+        ],
+        "title": "ProductStatsOut"
+      },
+      "PublicBusinessOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "branding": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Branding"
+          },
+          "privacy_policy_version": {
+            "type": "string",
+            "title": "Privacy Policy Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "branding",
+          "privacy_policy_version"
+        ],
+        "title": "PublicBusinessOut"
+      },
+      "RedeemPrizeIn": {
+        "properties": {
+          "prize_award_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Prize Award Id"
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "option_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Option Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prize_award_id"
+        ],
+        "title": "RedeemPrizeIn"
+      },
+      "RegisterIn": {
+        "properties": {
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "consent": {
+            "type": "boolean",
+            "title": "Consent"
+          },
+          "claim_token": {
+            "type": "string",
+            "title": "Claim Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phone",
+          "alias",
+          "consent",
+          "claim_token"
+        ],
+        "title": "RegisterIn"
+      },
+      "SaleCreateIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SaleItemIn"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Items"
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "transfer",
+              "card"
+            ],
+            "title": "Payment Method"
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Id"
+          },
+          "prize_award_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prize Award Id"
+          },
+          "prize_target_product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prize Target Product Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "payment_method"
+        ],
+        "title": "SaleCreateIn",
+        "description": "R3: products and quantities only. Any price sent by the client is ignored."
+      },
+      "SaleCustomerOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "phone_last4": {
+            "type": "string",
+            "title": "Phone Last4"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alias",
+          "phone_last4"
+        ],
+        "title": "SaleCustomerOut"
+      },
+      "SaleItemIn": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Product Id"
+          },
+          "qty": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Qty"
+          },
+          "option_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Option Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "qty"
+        ],
+        "title": "SaleItemIn"
+      },
+      "SaleItemOptionOut": {
+        "properties": {
+          "group_name": {
+            "type": "string",
+            "title": "Group Name"
+          },
+          "option_name": {
+            "type": "string",
+            "title": "Option Name"
+          },
+          "price_delta_cop": {
+            "type": "integer",
+            "title": "Price Delta Cop"
+          }
+        },
+        "type": "object",
+        "required": [
+          "group_name",
+          "option_name",
+          "price_delta_cop"
+        ],
+        "title": "SaleItemOptionOut"
+      },
+      "SaleItemOut": {
+        "properties": {
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "qty": {
+            "type": "integer",
+            "title": "Qty"
+          },
+          "unit_price_cop": {
+            "type": "integer",
+            "title": "Unit Price Cop"
+          },
+          "discount_cop": {
+            "type": "integer",
+            "title": "Discount Cop"
+          },
+          "prize_award_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prize Award Id"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/SaleItemOptionOut"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "label",
+          "qty",
+          "unit_price_cop",
+          "discount_cop",
+          "prize_award_id",
+          "options"
+        ],
+        "title": "SaleItemOut"
+      },
+      "SaleOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "workday_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workday Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "total_cop": {
+            "type": "integer",
+            "title": "Total Cop"
+          },
+          "payment_method": {
+            "type": "string",
+            "title": "Payment Method"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SaleItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "claim_url": {
+            "type": "string",
+            "title": "Claim Url"
+          },
+          "claim_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Claim Expires At"
+          },
+          "claim_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claim Method"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Paid At"
+          },
+          "claimed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claimed At"
+          },
+          "voided_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voided At"
+          },
+          "void_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Void Reason"
+          },
+          "customer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SaleCustomerOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "workday_id",
+          "status",
+          "total_cop",
+          "payment_method",
+          "items",
+          "claim_url",
+          "claim_expires_at",
+          "claim_method",
+          "paid_at",
+          "claimed_at",
+          "voided_at",
+          "void_reason",
+          "customer"
+        ],
+        "title": "SaleOut"
+      },
+      "SaleStatusCustomerOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "phone_last4": {
+            "type": "string",
+            "title": "Phone Last4"
+          },
+          "purchases": {
+            "type": "integer",
+            "title": "Purchases"
+          },
+          "active_prizes": {
+            "items": {
+              "$ref": "#/components/schemas/ActivePrizeBrief"
+            },
+            "type": "array",
+            "title": "Active Prizes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "alias",
+          "phone_last4",
+          "purchases",
+          "active_prizes"
+        ],
+        "title": "SaleStatusCustomerOut"
+      },
+      "SaleStatusOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "customer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SaleStatusCustomerOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "customer"
+        ],
+        "title": "SaleStatusOut"
+      },
+      "SpinBrief": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "milestone_n": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Milestone N"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reason",
+          "milestone_n"
+        ],
+        "title": "SpinBrief"
+      },
+      "SpinResultOut": {
+        "properties": {
+          "segment_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Segment Index"
+          },
+          "prize_award": {
+            "$ref": "#/components/schemas/AwardBrief"
+          },
+          "card": {
+            "$ref": "#/components/schemas/CardOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "segment_index",
+          "prize_award",
+          "card"
+        ],
+        "title": "SpinResultOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VoidIn": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "VoidIn"
+      },
+      "WheelOut": {
+        "properties": {
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/WheelSegment"
+            },
+            "type": "array",
+            "title": "Segments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "segments"
+        ],
+        "title": "WheelOut"
+      },
+      "WheelSegment": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "short_label": {
+            "type": "string",
+            "title": "Short Label"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "short_label",
+          "color"
+        ],
+        "title": "WheelSegment"
+      },
+      "WorkdayOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "local_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Local Date"
+          },
+          "day_type": {
+            "type": "string",
+            "title": "Day Type"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "opened_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Opened At"
+          },
+          "opened_by": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Opened By"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "weather_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Temp C"
+          },
+          "weather_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "local_date",
+          "day_type",
+          "status",
+          "opened_at",
+          "opened_by",
+          "closed_at",
+          "weather_temp_c",
+          "weather_code"
+        ],
+        "title": "WorkdayOut"
+      },
+      "WorkdayRatesOut": {
+        "properties": {
+          "workday_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workday Id"
+          },
+          "local_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Local Date"
+          },
+          "day_type": {
+            "type": "string",
+            "title": "Day Type"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "opened_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Opened At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "weather_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Temp C"
+          },
+          "weather_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Code"
+          },
+          "sales": {
+            "type": "integer",
+            "title": "Sales"
+          },
+          "claimed_sales": {
+            "type": "integer",
+            "title": "Claimed Sales"
+          },
+          "revenue_cop": {
+            "type": "integer",
+            "title": "Revenue Cop"
+          },
+          "cash_cop": {
+            "type": "integer",
+            "title": "Cash Cop"
+          },
+          "digital_cop": {
+            "type": "integer",
+            "title": "Digital Cop"
+          },
+          "drinks": {
+            "type": "integer",
+            "title": "Drinks"
+          },
+          "drinks_per_sale": {
+            "type": "number",
+            "title": "Drinks Per Sale"
+          },
+          "claimed_pct": {
+            "type": "number",
+            "title": "Claimed Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workday_id",
+          "local_date",
+          "day_type",
+          "status",
+          "opened_at",
+          "closed_at",
+          "weather_temp_c",
+          "weather_code",
+          "sales",
+          "claimed_sales",
+          "revenue_cop",
+          "cash_cop",
+          "digital_cop",
+          "drinks",
+          "drinks_per_sale",
+          "claimed_pct"
+        ],
+        "title": "WorkdayRatesOut"
+      },
+      "WorkdaySaleItemOut": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "qty": {
+            "type": "integer",
+            "title": "Qty"
+          },
+          "unit_price_cop": {
+            "type": "integer",
+            "title": "Unit Price Cop"
+          },
+          "discount_cop": {
+            "type": "integer",
+            "title": "Discount Cop"
+          },
+          "is_prize": {
+            "type": "boolean",
+            "title": "Is Prize"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/SaleItemOptionOut"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "qty",
+          "unit_price_cop",
+          "discount_cop",
+          "is_prize",
+          "options"
+        ],
+        "title": "WorkdaySaleItemOut"
+      },
+      "WorkdaySaleOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Paid At"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "payment_method": {
+            "type": "string",
+            "title": "Payment Method"
+          },
+          "total_cop": {
+            "type": "integer",
+            "title": "Total Cop"
+          },
+          "claim_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Claim Method"
+          },
+          "void_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Void Reason"
+          },
+          "customer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SaleCustomerOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkdaySaleItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "paid_at",
+          "status",
+          "payment_method",
+          "total_cop",
+          "claim_method",
+          "void_reason",
+          "customer",
+          "items"
+        ],
+        "title": "WorkdaySaleOut",
+        "description": "One sale of a workday, with its lines (void sales included)."
+      },
+      "WorkdaySalesPageOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkdaySaleOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "voided": {
+            "type": "integer",
+            "title": "Voided"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "next_cursor",
+          "total",
+          "voided"
+        ],
+        "title": "WorkdaySalesPageOut",
+        "description": "One page of a workday's sales, newest first."
+      },
+      "WorkdayStatsOut": {
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/WorkdayRatesOut"
+          },
+          "hourly": {
+            "items": {
+              "$ref": "#/components/schemas/HourlyOut"
+            },
+            "type": "array",
+            "title": "Hourly"
+          },
+          "top_products": {
+            "items": {
+              "$ref": "#/components/schemas/ProductStatsOut"
+            },
+            "type": "array",
+            "title": "Top Products"
+          },
+          "products": {
+            "items": {
+              "$ref": "#/components/schemas/ProductStatsOut"
+            },
+            "type": "array",
+            "title": "Products"
+          },
+          "best_hour": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Hour"
+          },
+          "cost_incomplete": {
+            "type": "boolean",
+            "title": "Cost Incomplete"
+          },
+          "margin_cop": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Cop"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/OptionSalesOut"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary",
+          "hourly",
+          "top_products",
+          "products",
+          "best_hour",
+          "cost_incomplete",
+          "margin_cop",
+          "options"
+        ],
+        "title": "WorkdayStatsOut"
+      },
+      "WorkdaySummaryOut": {
+        "properties": {
+          "workday_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workday Id"
+          },
+          "local_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Local Date"
+          },
+          "day_type": {
+            "type": "string",
+            "title": "Day Type"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "opened_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Opened At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "weather_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Temp C"
+          },
+          "weather_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weather Code"
+          },
+          "sales": {
+            "type": "integer",
+            "title": "Sales"
+          },
+          "claimed_sales": {
+            "type": "integer",
+            "title": "Claimed Sales"
+          },
+          "revenue_cop": {
+            "type": "integer",
+            "title": "Revenue Cop"
+          },
+          "cash_cop": {
+            "type": "integer",
+            "title": "Cash Cop"
+          },
+          "digital_cop": {
+            "type": "integer",
+            "title": "Digital Cop"
+          },
+          "drinks": {
+            "type": "integer",
+            "title": "Drinks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workday_id",
+          "local_date",
+          "day_type",
+          "status",
+          "opened_at",
+          "closed_at",
+          "weather_temp_c",
+          "weather_code",
+          "sales",
+          "claimed_sales",
+          "revenue_cop",
+          "cash_cop",
+          "digital_cop",
+          "drinks"
+        ],
+        "title": "WorkdaySummaryOut",
+        "description": "One row of v_workday_summary."
+      }
+    }
+  }
+}

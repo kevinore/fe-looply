@@ -1,0 +1,130 @@
+{
+  "validation_error": {
+    "status": 422,
+    "message": "Revisa los datos ingresados."
+  },
+  "invalid_phone": {
+    "status": 422,
+    "message": "Ese número no parece un celular colombiano."
+  },
+  "consent_required": {
+    "status": 422,
+    "message": "Debes aceptar el tratamiento de datos para continuar."
+  },
+  "product_invalid": {
+    "status": 422,
+    "message": "Uno de los productos ya no está disponible."
+  },
+  "prize_target_invalid": {
+    "status": 422,
+    "message": "Ese premio no aplica a esa bebida."
+  },
+  "options_invalid": {
+    "status": 422,
+    "message": "Revisa las opciones del producto."
+  },
+  "invalid_credentials": {
+    "status": 401,
+    "message": "Correo o contraseña incorrectos."
+  },
+  "not_authenticated": {
+    "status": 401,
+    "message": "Tu sesión terminó. Ingresa de nuevo."
+  },
+  "forbidden": {
+    "status": 403,
+    "message": "No tienes permiso para esta acción."
+  },
+  "forbidden_origin": {
+    "status": 403,
+    "message": "Solicitud no permitida."
+  },
+  "claim_not_found": {
+    "status": 404,
+    "message": "No encontramos esa compra."
+  },
+  "customer_not_found": {
+    "status": 404,
+    "message": "No encontramos ese cliente."
+  },
+  "sale_not_found": {
+    "status": 404,
+    "message": "No encontramos esa venta."
+  },
+  "workday_not_found": {
+    "status": 404,
+    "message": "No encontramos esa jornada."
+  },
+  "spin_not_found": {
+    "status": 404,
+    "message": "No encontramos ese giro."
+  },
+  "prize_not_found": {
+    "status": 404,
+    "message": "No encontramos ese premio."
+  },
+  "customer_exists": {
+    "status": 409,
+    "message": "Ya existe un cliente con ese celular."
+  },
+  "claim_already_claimed": {
+    "status": 409,
+    "message": "Esta compra ya fue reclamada."
+  },
+  "workday_not_open": {
+    "status": 409,
+    "message": "Abre la jornada para vender."
+  },
+  "workday_already_open": {
+    "status": 409,
+    "message": "Ya hay una jornada abierta."
+  },
+  "sale_not_linkable": {
+    "status": 409,
+    "message": "Esta venta ya no se puede modificar."
+  },
+  "sale_has_prize": {
+    "status": 409,
+    "message": "Esta venta usó un premio: anúlala en lugar de desvincularla."
+  },
+  "sale_already_void": {
+    "status": 409,
+    "message": "Esta venta ya estaba anulada."
+  },
+  "prize_not_active": {
+    "status": 409,
+    "message": "Este premio ya fue usado."
+  },
+  "prize_already_in_sale": {
+    "status": 409,
+    "message": "Solo se puede usar un premio por compra."
+  },
+  "discount_needs_new_sale": {
+    "status": 409,
+    "message": "Los descuentos se aplican en una compra nueva."
+  },
+  "spin_not_available": {
+    "status": 409,
+    "message": "Este giro ya no está disponible."
+  },
+  "claim_expired": {
+    "status": 410,
+    "message": "Este código venció."
+  },
+  "claim_voided": {
+    "status": 410,
+    "message": "Esta compra fue anulada."
+  },
+  "prize_expired": {
+    "status": 410,
+    "message": "Este premio venció."
+  },
+  "rate_limited": {
+    "status": 429,
+    "message": "Demasiados intentos. Espera un momento."
+  },
+  "internal_error": {
+    "status": 500,
+    "message": "Algo salió mal. Intenta de nuevo."
+  }
+}
