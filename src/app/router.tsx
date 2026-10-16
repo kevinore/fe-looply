@@ -34,6 +34,7 @@ export const router = createBrowserRouter([
           { path: 'scan', lazy: page(() => import('@/features/customer/pages/ScanPage')) },
           { path: 'install', lazy: page(() => import('@/features/customer/pages/InstallPage')) },
           { path: 'history', lazy: page(() => import('@/features/customer/pages/HistoryPage')) },
+          { path: 'privacy', lazy: page(() => import('@/features/customer/pages/PrivacyPage')) },
         ],
       },
 

@@ -118,6 +118,10 @@ export default function CardPage() {
           </ul>
         )}
       </section>
+
+      <Link to="/client/privacy" className="mx-auto mt-auto py-4 text-xs text-brand-muted underline underline-offset-2">
+        Política de tratamiento de datos
+      </Link>
     </Screen>
   );
 }

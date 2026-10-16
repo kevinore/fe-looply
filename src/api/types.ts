@@ -43,6 +43,18 @@ export type Branding = {
   tagline?: string;
   logo_url?: string | null;
   privacy_policy_url?: string | null;
+  /** Who is responsible for the customers' data (privacy policy, Ley 1581). */
+  legal?: {
+    legal_name?: string;
+    id_type?: string;
+    id_number?: string;
+    address?: string;
+    city?: string;
+    email?: string;
+    phone?: string;
+    /** YYYY-MM-DD the current policy version took effect. */
+    effective_date?: string;
+  };
   colors?: { primary?: string; secondary?: string; ink?: string; background?: string; bg?: string };
   /** Optional mascot illustrations; local defaults are used when missing. */
   mascots?: { hero?: string; celebrate?: string; welcome?: string };
