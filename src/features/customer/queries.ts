@@ -6,7 +6,7 @@ import { keys } from '@/app/keys';
 
 export const businessQuery = queryOptions({
   queryKey: keys.business,
-  queryFn: () => unwrap(api.GET('/api/c/business')),
+  queryFn: () => unwrap(api.GET('/api/client/business')),
   staleTime: 10 * 60_000,
 });
 
@@ -18,7 +18,7 @@ export const meQuery = queryOptions({
   queryKey: keys.me,
   queryFn: async (): Promise<Card | null> => {
     try {
-      return await unwrap(api.GET('/api/c/me'));
+      return await unwrap(api.GET('/api/client/me'));
     } catch (e) {
       if (isApiError(e, 'not_authenticated')) return null;
       throw e;

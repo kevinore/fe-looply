@@ -1,4 +1,4 @@
-type Zone = 'c' | 'op';
+type Zone = 'client' | 'admin';
 
 /**
  * Fire-and-forget analytics event. Never blocks the UI and never throws.
@@ -9,7 +9,7 @@ export function sendEvent(
   type: string,
   payload: Record<string, unknown> = {},
   saleId: string | null = null,
-  zone: Zone = 'c',
+  zone: Zone = 'client',
 ): void {
   try {
     const body = JSON.stringify({ type, sale_id: saleId, payload, client_ts: new Date().toISOString() });

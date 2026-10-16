@@ -70,7 +70,7 @@ export default function RegisterPage() {
         title={copy.title}
         body={copy.body}
         actions={
-          <ButtonLink to="/c" replace variant="secondary">
+          <ButtonLink to="/client" replace variant="secondary">
             Ir al inicio
           </ButtonLink>
         }
@@ -96,7 +96,7 @@ export default function RegisterPage() {
       setSubmitting(false);
       if (!(err instanceof ApiError)) return toast.error(errorMessage(err));
       if (err.code === 'customer_exists') {
-        navigate(`/c/confirm/${token}`, {
+        navigate(`/client/confirm/${token}`, {
           state: {
             phone: `+57${digits}`,
             digits,

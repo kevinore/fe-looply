@@ -19,7 +19,7 @@ export function PrizeRow({
   const badge = prizeBadge(type, shortLabel);
   return (
     <Link
-      to={`/c/prize/${id}`}
+      to={`/client/prize/${id}`}
       className="flex min-h-16 items-center gap-3 rounded-2xl bg-white p-3 shadow-card active:bg-brand-field"
     >
       <span

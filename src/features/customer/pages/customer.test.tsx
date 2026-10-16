@@ -33,8 +33,8 @@ afterEach(() => {
 
 describe('C1 · Registro', () => {
   const setup = () =>
-    renderRoutes([{ path: '/c/register/:token', element: <RegisterPage /> }], {
-      pathname: '/c/register/tok',
+    renderRoutes([{ path: '/client/register/:token', element: <RegisterPage /> }], {
+      pathname: '/client/register/tok',
       state: { preview },
     });
 
@@ -72,7 +72,7 @@ describe('C1 · Registro', () => {
     await user.click(screen.getByRole('button', { name: 'Girar la ruleta' }));
     expect(register).toHaveBeenCalledTimes(1);
     expect(register).toHaveBeenCalledWith({ phone: '+573101234567', alias: 'Anita', consent: true, claim_token: 'tok' });
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/c/confirm/tok'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/client/confirm/tok'));
     expect(screen.getByTestId('state')).toHaveTextContent('"alias":"Ana"');
     expect(screen.getByTestId('state')).toHaveTextContent('"last4":"4567"');
   });
@@ -99,14 +99,14 @@ describe('C1 · Registro', () => {
     await user.type(screen.getByLabelText('¿Cómo te llamas?'), 'Ana');
     await user.click(screen.getByRole('checkbox'));
     await user.click(screen.getByRole('button', { name: 'Girar la ruleta' }));
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/c/spin/sp1'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/client/spin/sp1'));
   });
 });
 
 describe('C2 · ¿Eres …?', () => {
   const state = { phone: '+573101234567', digits: '3101234567', alias: 'Ana', last4: '4567', typedAlias: 'Anita', preview };
   const setup = (s: unknown = state) =>
-    renderRoutes([{ path: '/c/confirm/:token', element: <ConfirmPage /> }], { pathname: '/c/confirm/tok', state: s });
+    renderRoutes([{ path: '/client/confirm/:token', element: <ConfirmPage /> }], { pathname: '/client/confirm/tok', state: s });
 
   it('confirms and sums the purchase', async () => {
     const user = userEvent.setup();
@@ -116,7 +116,7 @@ describe('C2 · ¿Eres …?', () => {
     expect(screen.getByText('310 ••• 4567')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Sí, soy yo' }));
     expect(confirm).toHaveBeenCalledWith({ phone: '+573101234567', claim_token: 'tok' });
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/c/claimed'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/client/claimed'));
   });
 
   it('"No" goes back to C1 keeping the name', async () => {
@@ -124,21 +124,21 @@ describe('C2 · ¿Eres …?', () => {
     setup();
     await user.click(screen.getByRole('button', { name: 'No, corregir número' }));
     expect(sendEvent).toHaveBeenCalledWith('identity_rejected');
-    expect(screen.getByTestId('path')).toHaveTextContent('/c/register/tok');
+    expect(screen.getByTestId('path')).toHaveTextContent('/client/register/tok');
     expect(screen.getByTestId('state')).toHaveTextContent('"alias":"Anita"');
     expect(screen.getByTestId('state')).toHaveTextContent('"focusPhone":true');
   });
 
   it('without state (reload) restarts from the QR entry', () => {
     setup(null);
-    expect(screen.getByTestId('path')).toHaveTextContent('/c/claim/tok');
+    expect(screen.getByTestId('path')).toHaveTextContent('/client/claim/tok');
   });
 });
 
 describe('S2 · +1 compra', () => {
   const setup = (counted: boolean) =>
-    renderRoutes([{ path: '/c/claimed', element: <ClaimedPage /> }], {
-      pathname: '/c/claimed',
+    renderRoutes([{ path: '/client/claimed', element: <ClaimedPage /> }], {
+      pathname: '/client/claimed',
       state: { result: result({ counted }), sale: preview.sale },
     });
 
@@ -157,8 +157,8 @@ describe('S2 · +1 compra', () => {
   });
 
   it('a sale that earns no stamp (e.g. only ice cream) says so', () => {
-    renderRoutes([{ path: '/c/claimed', element: <ClaimedPage /> }], {
-      pathname: '/c/claimed',
+    renderRoutes([{ path: '/client/claimed', element: <ClaimedPage /> }], {
+      pathname: '/client/claimed',
       state: { result: result({ counted: false, stamp_eligible: false }), sale: preview.sale },
     });
     expect(screen.getByText('¡Gracias por tu compra! Esta compra no suma a tu tarjeta.')).toBeInTheDocument();
@@ -179,8 +179,8 @@ describe('C3 · Ruleta', () => {
     ],
   };
   const setup = () =>
-    renderRoutes([{ path: '/c/spin/:spinId', element: <SpinPage /> }], {
-      pathname: '/c/spin/sp1',
+    renderRoutes([{ path: '/client/spin/:spinId', element: <SpinPage /> }], {
+      pathname: '/client/spin/sp1',
       state: { result: result({ new_spins: [{ id: 'sp1', reason: 'welcome', milestone_n: null }] }) },
     });
 
@@ -190,7 +190,7 @@ describe('C3 · Ruleta', () => {
     const spin = vi.spyOn(claimApi, 'spin').mockResolvedValue(spinResult);
     setup();
     expect(screen.getByText('Recuperando tu premio…')).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/c/prize/aw1'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/client/prize/aw1'));
     expect(spin).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('state')).toHaveTextContent('"justWon":true');
     expect(sessionStorage.getItem('spin:sp1')).toBe('existing-key');
@@ -236,6 +236,6 @@ describe('C3 · Ruleta', () => {
     await waitFor(() => expect(button).toBeEnabled());
     await user.click(button);
     expect(await screen.findByText('Este giro ya no está disponible.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Ver mi tarjeta' })).toHaveAttribute('href', '/c');
+    expect(screen.getByRole('link', { name: 'Ver mi tarjeta' })).toHaveAttribute('href', '/client');
   });
 });

@@ -23,8 +23,8 @@ Una sola aplicación con dos zonas:
 
 | Zona | Ruta | Usuario | Prioridad |
 |---|---|---|---|
-| Cliente | `/c/*` | Cliente del negocio, desde su celular | **Liviana y rápida**: carga en < 2 s con datos móviles |
-| Operador | `/op/*` | Dueño y operador, en el celular del punto | Completa y rápida de operar: venta de 3 bebidas en < 5 s |
+| Cliente | `/client/*` | Cliente del negocio, desde su celular | **Liviana y rápida**: carga en < 2 s con datos móviles |
+| Operador | `/admin/*` | Dueño y operador, en el celular del punto | Completa y rápida de operar: venta de 3 bebidas en < 5 s |
 
 Sin modo offline. Si no hay conexión, se muestra un mensaje claro y un botón para reintentar.
 
@@ -177,7 +177,7 @@ Regla: **nunca** mostrar al usuario un código técnico, un número HTTP ni un t
 
 ### 4.1 Marca dinámica (`BrandProvider`)
 
-1. Zona cliente: `GET /api/c/business`. Zona operador: `business` de `GET /api/op/auth/me`.
+1. Zona cliente: `GET /api/client/business`. Zona operador: `business` de `GET /api/admin/auth/me`.
 2. Aplicar `branding.colors` como variables CSS en `:root`: `--brand-primary`, `--brand-secondary`, `--brand-ink`, `--brand-bg`.
 3. Si falta un color, usar estos valores por defecto: primary `#E07AA6`, secondary `#5DA57E`, ink `#1A1A1A`, bg `#F4F1EC`.
 4. Actualizar `<meta name="theme-color">` con `--brand-primary`.
@@ -224,34 +224,34 @@ Tailwind lee esas variables: `bg-brand-primary`, `text-brand-ink`, etc. **Ningú
 
 | Ruta | Pantalla | Mockup |
 |---|---|---|
-| `/` | Redirige a `/c` | — |
-| `/c` | Mi tarjeta, o "Escanea tu compra" si no hay sesión | C5 |
-| `/c/claim/:token` | Entrada desde el QR (decide el flujo) | — |
-| `/c/register/:token` | Registro | C1 |
-| `/c/confirm/:token` | ¿Eres …? | C2 |
-| `/c/claimed` | +1 compra | S2 |
-| `/c/spin/:spinId` | Ruleta | C3 / S3 |
-| `/c/prize/:awardId` | Premio ganado / detalle | M1 / C6 |
-| `/c/prize/:awardId/use` | Quiero usar mi premio | M2 |
-| `/c/scan` | Escáner interno | S1 |
-| `/c/install` | Guardar en inicio | S0 |
-| `/c/history` | Historial | C4 |
-| `/op/login` | Login operador | — |
-| `/op` | Abrir jornada o Venta | 01 / 02 |
-| `/op/sale/:saleId/qr` | QR de venta | 04 |
-| `/op/sale/:saleId` | Ficha de venta vinculada | 05 |
-| `/op/search` | Buscar cliente | 06 |
-| `/op/prizes` | Premios pendientes | R5 |
-| `/op/summary` | Resumen y cierre | 07 |
-| `/op/history` | Histórico | — |
+| `/` | Redirige a `/client` | — |
+| `/client` | Mi tarjeta, o "Escanea tu compra" si no hay sesión | C5 |
+| `/client/claim/:token` | Entrada desde el QR (decide el flujo) | — |
+| `/client/register/:token` | Registro | C1 |
+| `/client/confirm/:token` | ¿Eres …? | C2 |
+| `/client/claimed` | +1 compra | S2 |
+| `/client/spin/:spinId` | Ruleta | C3 / S3 |
+| `/client/prize/:awardId` | Premio ganado / detalle | M1 / C6 |
+| `/client/prize/:awardId/use` | Quiero usar mi premio | M2 |
+| `/client/scan` | Escáner interno | S1 |
+| `/client/install` | Guardar en inicio | S0 |
+| `/client/history` | Historial | C4 |
+| `/admin/login` | Login operador | — |
+| `/admin` | Abrir jornada o Venta | 01 / 02 |
+| `/admin/sale/:saleId/qr` | QR de venta | 04 |
+| `/admin/sale/:saleId` | Ficha de venta vinculada | 05 |
+| `/admin/search` | Buscar cliente | 06 |
+| `/admin/prizes` | Premios pendientes | R5 |
+| `/admin/summary` | Resumen y cierre | 07 |
+| `/admin/history` | Histórico | — |
 
 ### 5.2 Carga diferida
-- Todo `/op/*` se importa con `React.lazy`. El cliente nunca descarga código del operador.
-- **Presupuesto:** el JavaScript inicial de `/c/claim/:token` pesa ≤ 150 KB comprimido. Verificar con `vite build` y el reporte de tamaños.
+- Todo `/admin/*` se importa con `React.lazy`. El cliente nunca descarga código del operador.
+- **Presupuesto:** el JavaScript inicial de `/client/claim/:token` pesa ≤ 150 KB comprimido. Verificar con `vite build` y el reporte de tamaños.
 
 ### 5.3 Guardas
-- `/op/*` (excepto login): `GET /api/op/auth/me`. Si 401 → `/op/login?next=<ruta>`.
-- Cualquier respuesta 401 en `/op` durante el uso → llevar a login conservando la ruta.
+- `/admin/*` (excepto login): `GET /api/admin/auth/me`. Si 401 → `/admin/login?next=<ruta>`.
+- Cualquier respuesta 401 en `/admin` durante el uso → llevar a login conservando la ruta.
 
 ---
 
@@ -285,7 +285,7 @@ Reglas del service worker:
 {
   "name": "<display_name del negocio>",
   "short_name": "<display_name corto>",
-  "start_url": "/c",
+  "start_url": "/client",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F4F1EC",
@@ -298,7 +298,7 @@ Reglas del service worker:
 }
 ```
 
-`public/manifest-op.webmanifest`: igual pero `start_url: "/op"` y nombre "<negocio> · Operador". En las rutas `/op/*`, reemplazar el `href` del `<link rel="manifest">` por este archivo al montar.
+`public/manifest-admin.webmanifest`: igual pero `start_url: "/admin"` y nombre "<negocio> · Operador". En las rutas `/admin/*`, reemplazar el `href` del `<link rel="manifest">` por este archivo al montar.
 
 > En el MVP el manifest es estático con los datos del primer negocio. Cuando haya un segundo negocio, se servirá dinámicamente. **[HUMANO]** entregar el logo en 512×512 para generar los íconos.
 
@@ -314,7 +314,7 @@ Reglas del service worker:
 Respetar áreas seguras del iPhone con `env(safe-area-inset-*)`.
 
 ### Verificación Fase 4
-- Lighthouse (móvil) en `/c`: instalable y sin errores de PWA.
+- Lighthouse (móvil) en `/client`: instalable y sin errores de PWA.
 - En Chrome Android aparece la opción de instalar.
 
 ---
@@ -323,26 +323,26 @@ Respetar áreas seguras del iPhone con `env(safe-area-inset-*)`.
 
 **Regla general de cada pantalla:** cuatro estados diseñados: cargando, éxito, error (con botón Reintentar) y vacío cuando aplique.
 
-### 7.1 Entrada desde el QR — `/c/claim/:token`
+### 7.1 Entrada desde el QR — `/client/claim/:token`
 
 Esta ruta **no muestra UI propia**: decide adónde ir. Mientras decide, pantalla de carga con la marca.
 
 1. Enviar evento `qr_scanned` (sin esperar respuesta).
-2. En paralelo: `GET /api/c/claims/:token` y `GET /api/c/me`.
+2. En paralelo: `GET /api/client/claims/:token` y `GET /api/client/me`.
 3. Según la vista previa `state`:
    - `already_claimed` → pantalla de mensaje "Esta compra ya fue reclamada" + botón "Ver mi tarjeta" (si hay sesión).
    - `expired` → "Este código venció. Pide al operador que lo busque por tus últimos 4 dígitos."
    - `voided` → "Esta compra fue anulada."
    - `not_found` → "No encontramos esa compra."
    - `claimable` → paso 4.
-4. Si `GET /api/c/me` respondió 200 (hay sesión) → `POST /api/c/claim {claim_token}` → paso 5.
-5. Si `GET /api/c/me` respondió 401 (sin sesión) → `navigate('/c/register/:token', { state: { preview } })`.
+4. Si `GET /api/client/me` respondió 200 (hay sesión) → `POST /api/client/claim {claim_token}` → paso 5.
+5. Si `GET /api/client/me` respondió 401 (sin sesión) → `navigate('/client/register/:token', { state: { preview } })`.
 6. Resultado del reclamo:
-   - Si `new_spins` tiene elementos → `/c/spin/<primer id>`.
-   - Si no → `/c/claimed` con la tarjeta.
+   - Si `new_spins` tiene elementos → `/client/spin/<primer id>`.
+   - Si no → `/client/claimed` con la tarjeta.
 7. Si el reclamo falla con `claim_already_claimed` (alguien lo reclamó entre la vista previa y el reclamo) → mensaje del paso 3.
 
-### 7.2 Registro — C1 `/c/register/:token`
+### 7.2 Registro — C1 `/client/register/:token`
 
 Contenido: encabezado "Tu compra ya cuenta." + chip con la compra (`items_count` bebidas · total) + mascota/logo desde branding.
 
@@ -355,46 +355,46 @@ Botón: **"Girar la ruleta"**, desactivado hasta que celular (10 dígitos, empie
 
 Al enviar:
 1. Enviar evento `register_viewed` al montar la pantalla (una vez).
-2. `POST /api/c/register { phone: "+57" + dígitos, alias, consent: true, claim_token }`.
+2. `POST /api/client/register { phone: "+57" + dígitos, alias, consent: true, claim_token }`.
 3. Botón en estado `loading`; no permitir doble envío.
 4. Respuestas:
    - 200/201 → igual que 7.1 paso 6.
-   - `customer_exists` → `navigate('/c/confirm/:token', { state: { phone, alias: extra.alias, last4: extra.phone_last4 } })`.
+   - `customer_exists` → `navigate('/client/confirm/:token', { state: { phone, alias: extra.alias, last4: extra.phone_last4 } })`.
    - `invalid_phone` → error bajo el campo celular.
    - `claim_*` → mensajes de 7.1 paso 3.
    - Otros → toast con el mensaje del mapa.
 
 Pie: "Sin contraseña · sin descargas · 20 segundos".
 
-### 7.3 ¿Eres …? — C2 `/c/confirm/:token`
+### 7.3 ¿Eres …? — C2 `/client/confirm/:token`
 
-- Si se entra sin `state` (recarga), volver a `/c/claim/:token`.
+- Si se entra sin `state` (recarga), volver a `/client/claim/:token`.
 - Texto: "El número 310 ••• 4567 ya está registrado. Confirma y sumamos la compra de hoy a tu tarjeta."
-- **"Sí, soy yo"** → `POST /api/c/identify/confirm { phone, claim_token }` → igual que 7.1 paso 6.
+- **"Sí, soy yo"** → `POST /api/client/identify/confirm { phone, claim_token }` → igual que 7.1 paso 6.
 - **"No, corregir número"** → evento `identity_rejected` → volver a C1 con el celular en foco y el nombre conservado.
 
-### 7.4 +1 compra — S2 `/c/claimed`
+### 7.4 +1 compra — S2 `/client/claimed`
 
-- Datos: la tarjeta que devolvió el reclamo (pasada por `state`; si no hay, `GET /api/c/me`).
+- Datos: la tarjeta que devolvió el reclamo (pasada por `state`; si no hay, `GET /api/client/me`).
 - Muestra: "¡Hola, {alias}!", "+1 compra", `ProgressSegments`, texto "{progress} de {milestone_every} compras · faltan {purchases_to_next_spin} para girar".
 - Si `counted === false`: texto "Ya sumaste tu compra de hoy. ¡Gracias por volver!" en lugar de "+1 compra". Con la regla R8 actual (1 sello por venta) el backend siempre envía `counted = true`; el texto se conserva por si la regla vuelve a ser por jornada.
-- Botón **"Listo"** → `/c`.
-- Si es la primera compra del cliente y no está instalada → después de "Listo", ir a `/c/install` (una sola vez por dispositivo; recordar con una cookie no sensible `install_prompt_seen=1` puesta por el frontend, 180 días).
+- Botón **"Listo"** → `/client`.
+- Si es la primera compra del cliente y no está instalada → después de "Listo", ir a `/client/install` (una sola vez por dispositivo; recordar con una cookie no sensible `install_prompt_seen=1` puesta por el frontend, 180 días).
 
-### 7.5 Ruleta — C3 / S3 `/c/spin/:spinId`
+### 7.5 Ruleta — C3 / S3 `/client/spin/:spinId`
 
 Encabezado:
 - Si el giro es `welcome`: "Gira, {alias}." + "Todas las casillas ganan."
 - Si es `milestone`: pantalla S3 "¡Giro desbloqueado!" con progreso completo, y botón "Girar ahora" que muestra la rueda.
 
-Carga: `GET /api/c/wheel` → segmentos. Dibujar la rueda en SVG con **segmentos iguales** (no reflejan probabilidades), cada uno con `short_label` y su color de marca.
+Carga: `GET /api/client/wheel` → segmentos. Dibujar la rueda en SVG con **segmentos iguales** (no reflejan probabilidades), cada uno con `short_label` y su color de marca.
 
 Al tocar **"Girar"**:
 1. Desactivar el botón inmediatamente.
 2. Leer o crear la clave de idempotencia: `sessionStorage['spin:' + spinId]`; si no existe, `crypto.randomUUID()` y guardarla. (El backend es idempotente por giro; la clave sirve para detectar recargas en el cliente.)
-3. `POST /api/c/spins/:spinId/spin`.
+3. `POST /api/client/spins/:spinId/spin`.
 4. Con `segment_index` de la respuesta, animar (7.5.1).
-5. Al terminar la animación → `/c/prize/:awardId` (M1).
+5. Al terminar la animación → `/client/prize/:awardId` (M1).
 
 Recarga en medio: al montar, si `sessionStorage['spin:' + spinId]` existe, llamar de nuevo `POST .../spin` (devuelve el mismo premio) y mostrar directamente el resultado sin animar.
 
@@ -418,54 +418,54 @@ export function targetRotation(index: number, n: number, currentRotation: number
 - Con `prefers-reduced-motion`: sin vueltas, mostrar el resultado directamente.
 - Pruebas unitarias: para cada `index`, el ángulo final normalizado deja el centro del segmento bajo el puntero (tolerancia ± 30% del segmento).
 
-### 7.6 Premio ganado — M1 `/c/prize/:awardId`
+### 7.6 Premio ganado — M1 `/client/prize/:awardId`
 
-- `GET /api/c/prizes/:awardId`.
+- `GET /api/client/prizes/:awardId`.
 - Muestra: "¡Ganaste!", nombre del premio, "en una bebida · vence {fecha}".
 - Pregunta "¿Lo usas ahora?":
-  - **"Usar ahora"** → `/c/prize/:awardId/use` (M2).
-  - **"Guardar para otra visita"** → `/c`.
+  - **"Usar ahora"** → `/client/prize/:awardId/use` (M2).
+  - **"Guardar para otra visita"** → `/client`.
 - Si el premio está `redeemed` → "Ya usaste este premio". Si `expired` → "Este premio venció".
 
 Detalle desde la tarjeta (C6): misma ruta, con fechas de ganado y vencimiento, y los pasos: "Pide tu bebida", "Dile tu nombre al operador: él lo redime desde tu ficha", "Máximo un premio por compra, sobre una bebida". Pie: "Activo · solo lo redime el operador".
 
-### 7.7 Quiero usar mi premio — M2 `/c/prize/:awardId/use`
+### 7.7 Quiero usar mi premio — M2 `/client/prize/:awardId/use`
 
 - Pantalla oscura de alto contraste para mostrarle al operador.
 - Título: "Cuando te toque, dile: 'Quiero usar mi premio'".
 - Tarjeta: NOMBRE `{alias}` · CELULAR `{últimos 4}` · PREMIO `{nombre}`.
-- Consultar `GET /api/c/prizes/:awardId` **cada 3 segundos** (`refetchInterval`).
-- Cuando `status === 'redeemed'` → animación de éxito "¡Premio aplicado!" y botón "Listo" → `/c`.
+- Consultar `GET /api/client/prizes/:awardId` **cada 3 segundos** (`refetchInterval`).
+- Cuando `status === 'redeemed'` → animación de éxito "¡Premio aplicado!" y botón "Listo" → `/client`.
 - Mantener la pantalla encendida (Wake Lock, 9.1).
-- Botón "Mejor lo guardo" → `/c`.
+- Botón "Mejor lo guardo" → `/client`.
 
-### 7.8 Mi tarjeta — C5 `/c`
+### 7.8 Mi tarjeta — C5 `/client`
 
-Sin sesión (`GET /api/c/me` → 401): pantalla con la marca y el texto "Para ver tu tarjeta, escanea el QR de tu próxima compra." + botón "Escanear" (S1). **No** hay formulario para ingresar el celular aquí: la identidad solo se recupera con una compra real (regla R5 del backend).
+Sin sesión (`GET /api/client/me` → 401): pantalla con la marca y el texto "Para ver tu tarjeta, escanea el QR de tu próxima compra." + botón "Escanear" (S1). **No** hay formulario para ingresar el celular aquí: la identidad solo se recupera con una compra real (regla R5 del backend).
 
 Con sesión:
 - Evento `card_viewed`.
 - Saludo con fecha: "Domingo 27 sep · Hola, {alias}".
 - Tarjeta de marca: `{progress} de {milestone_every} compras` + `ProgressSegments` (el último segmento con la etiqueta "GIRO").
-- Si hay `available_spins`: banner destacado "Tienes {n} giro(s) esperándote" → `/c/spin/<id>`.
-- Botón **"Escanear mi compra"** → `/c/scan`.
-- Lista "Premios activos ({n})": nombre + "Vence {fecha}". Toque → `/c/prize/:id`.
+- Si hay `available_spins`: banner destacado "Tienes {n} giro(s) esperándote" → `/client/spin/<id>`.
+- Botón **"Escanear mi compra"** → `/client/scan`.
+- Lista "Premios activos ({n})": nombre + "Vence {fecha}". Toque → `/client/prize/:id`.
 - Barra inferior: Tarjeta · Premios · Historial.
 
-### 7.9 Escáner interno — S1 `/c/scan`
+### 7.9 Escáner interno — S1 `/client/scan`
 
 1. Pedir cámara trasera con `qr-scanner`.
 2. Marco guía y texto "Apunta al QR de tu compra".
 3. Al leer un código:
-   - Parsear como URL. Aceptar solo si el **origen es el mismo de la app** y la ruta coincide con `/c/claim/<token>`.
-   - Válido → `navigate('/c/claim/<token>')`.
+   - Parsear como URL. Aceptar solo si el **origen es el mismo de la app** y la ruta coincide con `/client/claim/<token>`.
+   - Válido → `navigate('/client/claim/<token>')`.
    - Inválido → "Este código no es de una compra" y seguir escaneando.
 4. Permiso denegado o sin cámara: "Dile al operador tus últimos 4 dígitos: {last4}" (el last4 viene de la tarjeta).
 5. Liberar la cámara al salir de la pantalla.
 
-> Nota: si el cliente escanea el QR con la **cámara normal** del celular, el sistema abre `/c/claim/:token` y todo funciona igual (7.1).
+> Nota: si el cliente escanea el QR con la **cámara normal** del celular, el sistema abre `/client/claim/:token` y todo funciona igual (7.1).
 
-### 7.10 Guardar en inicio — S0 `/c/install`
+### 7.10 Guardar en inicio — S0 `/client/install`
 
 Mostrar solo si `!isStandalone()`. Evento `install_prompt_shown`.
 
@@ -476,15 +476,15 @@ Mostrar solo si `!isStandalone()`. Evento `install_prompt_shown`.
 | iPhone + Chrome | Pasos: 1) Toca **Compartir** (en la barra de Chrome). 2) Elige **Agregar a inicio**. |
 | Otro | No mostrar la pantalla. |
 
-Botón secundario "Ahora no" → `/c`.
+Botón secundario "Ahora no" → `/client`.
 
 Capturar `beforeinstallprompt` en `main.tsx` al arrancar (llamar `preventDefault()` y guardarlo en memoria).
 
-### 7.11 Historial — C4 `/c/history`
-`GET /api/c/history`: lista por fecha con productos, total y premio usado. Estado vacío: "Todavía no tienes compras."
+### 7.11 Historial — C4 `/client/history`
+`GET /api/client/history`: lista por fecha con productos, total y premio usado. Estado vacío: "Todavía no tienes compras."
 
 ### 7.12 Eventos del cliente (`src/lib/events.ts`)
-- `sendEvent(type, payload?, saleId?)`: `POST /api/c/events` con `client_ts`. Usar `navigator.sendBeacon` si está disponible; si falla, ignorar en silencio. **Nunca** bloquear la interfaz por un evento.
+- `sendEvent(type, payload?, saleId?)`: `POST /api/client/events` con `client_ts`. Usar `navigator.sendBeacon` si está disponible; si falla, ignorar en silencio. **Nunca** bloquear la interfaz por un evento.
 - `page_loaded` con `load_ms = performance.now()` cuando la primera pantalla termina de renderizar.
 
 ### Verificación Fase 5
@@ -495,21 +495,21 @@ Capturar `beforeinstallprompt` en `main.tsx` al arrancar (llamar `preventDefault
 
 ## 8. Fase 6 · Zona del operador, pantalla por pantalla
 
-### 8.1 Login — `/op/login`
+### 8.1 Login — `/admin/login`
 - Email (`autocomplete="username"`) y contraseña (`autocomplete="current-password"`).
-- `POST /api/op/auth/login` → redirigir a `next` o `/op`.
+- `POST /api/admin/auth/login` → redirigir a `next` o `/admin`.
 - `invalid_credentials` → mensaje bajo el formulario. `rate_limited` → mensaje de espera.
 
-### 8.2 Abrir jornada — 01 `/op` (sin jornada abierta)
-- `GET /api/op/workdays/current` → `null`.
-- Muestra: "Buenos días, {nombre}", fecha local larga ("Domingo 4 de octubre"), tipo (Domingo / Festivo / Otro día), clima si ya existe, y la última jornada (desde `GET /api/op/stats/history`).
-- **"Abrir jornada"** → `POST /api/op/workdays/open` → pantalla de venta.
+### 8.2 Abrir jornada — 01 `/admin` (sin jornada abierta)
+- `GET /api/admin/workdays/current` → `null`.
+- Muestra: "Buenos días, {nombre}", fecha local larga ("Domingo 4 de octubre"), tipo (Domingo / Festivo / Otro día), clima si ya existe, y la última jornada (desde `GET /api/admin/stats/history`).
+- **"Abrir jornada"** → `POST /api/admin/workdays/open` → pantalla de venta.
 - `workday_already_open` → ir directo a la venta.
 - `workday_already_closed_today` → "La jornada de hoy ya se cerró" + botón al resumen.
 
-### 8.3 Venta — 02 `/op` (con jornada abierta)
+### 8.3 Venta — 02 `/admin` (con jornada abierta)
 
-Datos: `GET /api/op/products` (cachear 5 minutos).
+Datos: `GET /api/admin/products` (cachear 5 minutos).
 
 Estado del carrito (Zustand, **solo en memoria**):
 ```ts
@@ -526,7 +526,7 @@ Interacción:
 - Contador `×N` sobre el producto.
 - Encabezado: "Jornada abierta · venta {n}".
 - Barra inferior: "{n} bebidas" + total **estimado** (suma de precios del catálogo; el total real lo calcula el backend) + botón **"Cobrar"** (desactivado con carrito vacío).
-- Botón secundario **"Cliente"** en el encabezado → `/op/search?mode=attach` (F5).
+- Botón secundario **"Cliente"** en el encabezado → `/admin/search?mode=attach` (F5).
 - Si hay cliente vinculado (R1): banda verde superior "{alias} · 310 ••• {last4} · {progress} de {every} compras" con ✕ para quitarlo, y banda rosa "{alias} tiene {n} premios · Aplicar" si tiene premios activos.
 
 ### 8.4 Cobrar — 03 (hoja inferior)
@@ -541,44 +541,44 @@ Contenido:
 - Enlace "Volver al carrito".
 
 Al confirmar:
-1. `POST /api/op/sales` con cabecera `Idempotency-Key` y cuerpo `{items, payment_method, customer_id, prize_award_id, prize_target_product_id}`.
+1. `POST /api/admin/sales` con cabecera `Idempotency-Key` y cuerpo `{items, payment_method, customer_id, prize_award_id, prize_target_product_id}`.
 2. Éxito:
-   - Venta **sin** cliente → vaciar carrito → `/op/sale/:id/qr`.
+   - Venta **sin** cliente → vaciar carrito → `/admin/sale/:id/qr`.
    - Venta **con** cliente → vaciar carrito → pantalla de confirmación R4 (8.9).
 3. Error → toast con mensaje; **no** vaciar el carrito; conservar la clave de idempotencia para reintentar.
 
-### 8.5 QR de venta — 04 `/op/sale/:saleId/qr`
+### 8.5 QR de venta — 04 `/admin/sale/:saleId/qr`
 
 - Fondo del color primario de la marca. "Venta {n} · {total} · {medio}". Título: "Escanea y gira la ruleta".
 - QR generado con `qrcode` a partir de `claim_url`: SVG, corrección de errores `M`, mínimo 260 px, fondo blanco con margen blanco amplio. Logo pequeño al centro solo si sigue siendo legible con corrección `M` (probarlo; si falla, quitarlo).
 - Chip de estado: "Esperando escaneo…" con punto animado.
 - Al montar: evento `sale_qr_shown` y **Wake Lock** (9.1).
-- Consultar `GET /api/op/sales/:id/status` **cada 2 segundos** mientras `status === 'paid'`. Detener cuando cambie, al salir de la pantalla o si pasan 10 minutos.
-- Cuando `status === 'claimed'` → `/op/sale/:id` (05) con vibración corta.
+- Consultar `GET /api/admin/sales/:id/status` **cada 2 segundos** mientras `status === 'paid'`. Detener cuando cambie, al salir de la pantalla o si pasan 10 minutos.
+- Cuando `status === 'claimed'` → `/admin/sale/:id` (05) con vibración corta.
 - Botones:
-  - **"Siguiente venta"** → evento `sale_skipped` → `/op`.
-  - **"Buscar cliente"** → `/op/search?saleId=:id`.
-  - **"Anular venta"** (enlace) → diálogo con motivo obligatorio (3–200 caracteres) → `POST /api/op/sales/:id/void` → `/op`.
+  - **"Siguiente venta"** → evento `sale_skipped` → `/admin`.
+  - **"Buscar cliente"** → `/admin/search?saleId=:id`.
+  - **"Anular venta"** (enlace) → diálogo con motivo obligatorio (3–200 caracteres) → `POST /api/admin/sales/:id/void` → `/admin`.
 
-### 8.6 Ficha de venta vinculada — 05 `/op/sale/:saleId`
+### 8.6 Ficha de venta vinculada — 05 `/admin/sale/:saleId`
 
 - Banda verde: "✓ Vinculada por {QR|manual} · {hora}", inicial del nombre, alias, "310 ••• {last4}", progreso con texto "{faltan} para el próximo giro".
 - "Premios activos · máx. 1 por venta": cada premio con botón **"Redimir"** si aplica (8.8).
   - `extra_item` y `free_item`: "Se entrega ya".
   - `percent_off`: "Próxima venta" (no se puede redimir sobre esta venta; el botón lleva a una venta nueva con el premio preseleccionado, 8.10).
 - Aviso: "Confirma el nombre en persona antes de redimir."
-- **"Siguiente venta"** → `/op`.
-- Enlace **"Desvincular (no es {alias})"** → confirmación → `POST /api/op/sales/:id/unlink` → vuelve al QR (04). Si `sale_has_prize` → mensaje.
+- **"Siguiente venta"** → `/admin`.
+- Enlace **"Desvincular (no es {alias})"** → confirmación → `POST /api/admin/sales/:id/unlink` → vuelve al QR (04). Si `sale_has_prize` → mensaje.
 
-### 8.7 Buscar cliente — 06 `/op/search`
+### 8.7 Buscar cliente — 06 `/admin/search`
 
 Parámetros: `?saleId=` (vincular una venta ya cobrada, F4) o `?mode=attach` (vincular antes de cobrar, F5), o `?mode=redeem` (F6).
 
 - `DigitBoxes` + `Keypad` grande.
-- Al completar 4 dígitos → `GET /api/op/customers/search?last4=`.
+- Al completar 4 dígitos → `GET /api/admin/customers/search?last4=`.
 - Resultados: inicial, alias, "310 ••• {last4} · {compras} compras · {n} premios" + botón **"Vincular"** (o "Elegir" en `mode=attach`/`redeem`).
 - Acción según el modo:
-  - `saleId` → `POST /api/op/sales/:saleId/link {customer_id}` → 05.
+  - `saleId` → `POST /api/admin/sales/:saleId/link {customer_id}` → 05.
   - `mode=attach` → guardar el cliente en el carrito → volver a 02.
   - `mode=redeem` → 8.8 sobre la venta más reciente del cliente en la jornada.
 - Sin resultados: "Nadie con esos 4 dígitos."
@@ -591,7 +591,7 @@ Hoja inferior "{premio} ¿en cuál bebida?":
 - `extra_item`: lista de bebidas de la venta para elegir a cuál va el extra (informativo) → botón **"Entregado"**.
 - `free_item`: lista de productos activos para elegir cuál se entrega → botón **"Entregado"**.
 - Resumen: "Se registra en su venta de hoy · {n} bebidas · {total} · + {premio} $0 · No se cobra nada más".
-- `POST /api/op/sales/:saleId/redeem-prize { prize_award_id, product_id }`.
+- `POST /api/admin/sales/:saleId/redeem-prize { prize_award_id, product_id }`.
 - Éxito → toast "Premio entregado" → 05 actualizado.
 - `discount_needs_new_sale` → abrir venta nueva con el premio preseleccionado (8.10).
 
@@ -609,23 +609,23 @@ Hoja inferior "{premio} ¿en cuál bebida?":
 ### 8.10 Venta nueva con descuento — M4 (F6 4b)
 Igual que 02 con cliente y premio preseleccionados. La banda muestra "Buscada por {last4} · 2.ª venta hoy, no suma" cuando corresponda (el backend lo confirma con `counted` en la respuesta).
 
-### 8.11 Premios pendientes — R5 `/op/prizes`
-- `GET /api/op/prizes/pending?filter=expiring|free|all`.
+### 8.11 Premios pendientes — R5 `/admin/prizes`
+- `GET /api/admin/prizes/pending?filter=expiring|free|all`.
 - Pestañas: "Vencen en 7 días", "Gratis", "Todos".
 - Filas: inicial, alias · last4, premio, "vence en {n} días".
 - Pie: "Al buscar o vincular a un cliente con premios, el aviso aparece solo en la venta."
 
-### 8.12 Resumen y cierre — 07 `/op/summary`
-- `GET /api/op/stats/workdays/{id}`.
+### 8.12 Resumen y cierre — 07 `/admin/summary`
+- `GET /api/admin/stats/workdays/{id}`.
 - Muestra: fecha y horario, **total**, ventas, bebidas, bebidas por venta, **% vinculadas** contra meta 40% (tarjeta destacada), gráfico de barras de ventas por hora con la mejor hora resaltada, efectivo vs digital con la frase "Cuadre: cuenta el efectivo de caja contra {efectivo}", top 3 productos.
-- **"Cerrar jornada"** → diálogo de confirmación "¿Contaste el efectivo?" → `POST /api/op/workdays/current/close` → pantalla del resumen final en modo solo lectura.
+- **"Cerrar jornada"** → diálogo de confirmación "¿Contaste el efectivo?" → `POST /api/admin/workdays/current/close` → pantalla del resumen final en modo solo lectura.
 - El gráfico se dibuja en SVG propio (sin librería de gráficos).
 
-### 8.13 Histórico — `/op/history`
-Rango de fechas (por defecto 30 días) → `GET /api/op/stats/history`: lista de jornadas (fecha, total, ventas, % vinculadas) y ranking de productos. Botón "Exportar CSV" (solo dueño) que abre `/api/op/export/sales.csv?from&to`.
+### 8.13 Histórico — `/admin/history`
+Rango de fechas (por defecto 30 días) → `GET /api/admin/stats/history`: lista de jornadas (fecha, total, ventas, % vinculadas) y ranking de productos. Botón "Exportar CSV" (solo dueño) que abre `/api/admin/export/sales.csv?from&to`.
 
 ### 8.14 Navegación del operador
-Barra inferior en 02: **Venta** · **Buscar** · **Premios** · **Resumen**. Menú con "Histórico" y "Cerrar sesión" (`POST /api/op/auth/logout`).
+Barra inferior en 02: **Venta** · **Buscar** · **Premios** · **Resumen**. Menú con "Histórico" y "Cerrar sesión" (`POST /api/admin/auth/logout`).
 
 ### Verificación Fase 6
 - Recorrer F4, F5, F6 y F7 completos contra el backend local.
@@ -693,11 +693,11 @@ Contra backend local con base de prueba y datos semilla. Proyectos: `Mobile Safa
 | iPhone + Safari | Registro; cerrar Safari; volver **al día siguiente**: la sesión sigue; Agregar a inicio y abrir desde el ícono |
 | iPhone + Chrome | Mismo flujo; confirmar que la sesión es independiente de Safari y que "¿Eres …?" la recupera |
 | Android + Chrome | Instalación con botón nativo; escáner interno |
-| Android de gama baja | `/c/claim/:token` carga en < 2 s con datos móviles 4G |
+| Android de gama baja | `/client/claim/:token` carga en < 2 s con datos móviles 4G |
 | Celular del operador | QR legible al sol a 50 cm; la pantalla no se apaga en 04; venta de 3 bebidas en < 5 s |
 
 ### 11.5 Rendimiento
-Lighthouse móvil sobre `/c/claim/<token de prueba>`: Rendimiento ≥ 90, PWA instalable, Accesibilidad ≥ 90.
+Lighthouse móvil sobre `/client/claim/<token de prueba>`: Rendimiento ≥ 90, PWA instalable, Accesibilidad ≥ 90.
 
 ---
 
@@ -708,7 +708,7 @@ Lighthouse móvil sobre `/c/claim/<token de prueba>`: Rendimiento ≥ 90, PWA in
 3. Desplegar a producción desde la rama `main`; vistas previas automáticas en otras ramas (apuntan a la API de `dev`: crear un segundo servicio de Railway con la rama `dev` de Neon **[HUMANO]**, o dejar las vistas previas sin backend).
 4. Verificar en producción:
    - `https://<dominio>/api/health` → `ok` (prueba el rewrite).
-   - Login de operador y cookie `op_session` presente con `HttpOnly` y `Secure`.
+   - Login de operador y cookie `admin_session` presente con `HttpOnly` y `Secure`.
    - Cabeceras de seguridad presentes (revisar en las herramientas del navegador).
 5. **Ensayo general [HUMANO]:** en casa, con datos móviles, 20 ventas simuladas cubriendo F1–F7 entre dos personas. Luego anular esas ventas y abrir la jornada real.
 

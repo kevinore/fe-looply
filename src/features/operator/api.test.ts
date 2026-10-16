@@ -1,4 +1,4 @@
-import { displayProgress, estimateDiscount } from './api';
+import { displayProgress, estimateDiscount, prizeAppliesTo } from './api';
 
 describe('displayProgress (matches backend build_card)', () => {
   it('no purchases: empty, every purchase to go', () => {
@@ -34,5 +34,18 @@ describe('estimateDiscount (display only)', () => {
   it('extra item costs nothing; no product → no estimate', () => {
     expect(estimateDiscount({ type: 'extra_item', value: 0, max_value_cop: null }, drink(14000))).toBe(0);
     expect(estimateDiscount({ type: 'percent_off', value: 10, max_value_cop: null }, undefined)).toBeNull();
+  });
+});
+
+describe('prizeAppliesTo (matches backend applies_to)', () => {
+  const ice = { prize_eligible: true, category_id: 'ice' };
+  it('a prize without category applies to any product that takes prizes', () => {
+    expect(prizeAppliesTo({ category_id: null }, ice)).toBe(true);
+    expect(prizeAppliesTo({ category_id: null }, { ...ice, prize_eligible: false })).toBe(false);
+  });
+  it('a prize with category applies only to that category', () => {
+    expect(prizeAppliesTo({ category_id: 'ice' }, ice)).toBe(true);
+    expect(prizeAppliesTo({ category_id: 'drinks' }, ice)).toBe(false);
+    expect(prizeAppliesTo({ category_id: 'ice' }, { ...ice, prize_eligible: false })).toBe(false);
   });
 });

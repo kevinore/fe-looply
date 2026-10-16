@@ -15,7 +15,7 @@ export function useOpenWorkday({ reopening = false }: { reopening?: boolean } = 
     onSuccess: (wd) => {
       qc.setQueryData(keys.workday, wd);
       void qc.invalidateQueries({ queryKey: keys.workdayStats(wd.id) });
-      void qc.invalidateQueries({ queryKey: ['op', 'stats', 'history'] });
+      void qc.invalidateQueries({ queryKey: ['admin', 'stats', 'history'] });
       if (reopening) toast.success('Jornada reabierta · las ventas siguen en el mismo día');
     },
     onError: (e) => {

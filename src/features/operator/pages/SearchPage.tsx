@@ -71,12 +71,12 @@ export default function SearchPage() {
         // Linked by hand: no "scanned" notification for it.
         usePendingSales.getState().forget(saleId!);
         void qc.invalidateQueries({ queryKey: keys.sale(saleId!) });
-        navigate(`/op/sale/${saleId}`, { replace: true, state: { card: r.result.card, foundBy: digits } });
+        navigate(`/admin/sale/${saleId}`, { replace: true, state: { card: r.result.card, foundBy: digits } });
       } else if (r.kind === 'attach') {
         useCart.getState().setCustomer(toCartCustomer(r.detail));
-        navigate('/op');
+        navigate('/admin');
       } else if (r.kind === 'redeem') {
-        navigate(`/op/sale/${r.saleId}`, { state: { foundBy: digits } });
+        navigate(`/admin/sale/${r.saleId}`, { state: { foundBy: digits } });
       } else {
         setNoSaleFor(r.detail);
       }
@@ -150,7 +150,7 @@ export default function SearchPage() {
             onClick={() => {
               if (!noSaleFor) return;
               useCart.getState().setCustomer(toCartCustomer(noSaleFor));
-              navigate('/op');
+              navigate('/admin');
             }}
           >
             Nueva venta con {noSaleFor?.alias}

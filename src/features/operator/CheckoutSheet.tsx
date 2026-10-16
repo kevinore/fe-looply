@@ -73,12 +73,12 @@ export function CheckoutSheet({
       const prizeName = useCart.getState().prize?.name;
       useCart.getState().reset();
       onClose();
-      if (sale.customer) navigate(`/op/sale/${sale.id}`, { state: { confirmed: true, prizeName } });
-      else if (showQr) navigate(`/op/sale/${sale.id}/qr`);
+      if (sale.customer) navigate(`/admin/sale/${sale.id}`, { state: { confirmed: true, prizeName } });
+      else if (showQr) navigate(`/admin/sale/${sale.id}/qr`);
       else {
         // Stay on Venta, ready for the next order. The sale counts in the summary.
-        sendEvent('sale_skipped', { reason: 'no_customer' }, sale.id, 'op');
-        void qc.invalidateQueries({ queryKey: ['op', 'stats'] });
+        sendEvent('sale_skipped', { reason: 'no_customer' }, sale.id, 'admin');
+        void qc.invalidateQueries({ queryKey: ['admin', 'stats'] });
         void qc.invalidateQueries({ queryKey: keys.workdaySales(sale.workday_id) });
         toast.success(`Venta registrada sin cliente · ${formatCop(sale.total_cop)}`);
       }

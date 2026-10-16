@@ -1,15 +1,17 @@
 import type { Branding } from '@/api/types';
 import { useBrand } from './BrandProvider';
 
-export type MascotPose = 'drink' | 'matcha' | 'counter';
+export type MascotPose = 'drink' | 'matcha' | 'counter' | 'blender';
 
 const LOCAL: Record<MascotPose, string> = {
   drink: '/brand/mascot-drink',
   matcha: '/brand/mascot-matcha',
   counter: '/brand/mascot-counter',
+  blender: '/brand/mascot-blender',
 };
 
-const FROM_BRANDING: Record<MascotPose, keyof NonNullable<Branding['mascots']>> = {
+// Poses without a branding slot always use the local files.
+const FROM_BRANDING: Partial<Record<MascotPose, keyof NonNullable<Branding['mascots']>>> = {
   drink: 'hero',
   matcha: 'celebrate',
   counter: 'welcome',
@@ -35,7 +37,8 @@ export function Mascot({
   alt?: string;
 }) {
   const { branding } = useBrand();
-  const remote = branding.mascots?.[FROM_BRANDING[pose]];
+  const slot = FROM_BRANDING[pose];
+  const remote = slot && branding.mascots?.[slot];
   const common = {
     alt,
     className,

@@ -32,7 +32,7 @@ export default function PrizeUsePage() {
   if (prize.isError && !prize.data) {
     return (
       <Screen tone="dark">
-        <TopBar backTo="/c" dark />
+        <TopBar backTo="/client" dark />
         <ErrorState error={prize.error} onRetry={() => void prize.refetch()} className="text-white" />
       </Screen>
     );
@@ -45,7 +45,7 @@ export default function PrizeUsePage() {
       <Screen
         tone="secondary"
         footer={
-          <ButtonLink to="/c" replace variant="dark">
+          <ButtonLink to="/client" replace variant="dark">
             Listo
           </ButtonLink>
         }
@@ -66,7 +66,7 @@ export default function PrizeUsePage() {
         title={p.status === 'expired' ? 'Este premio venció' : 'Este premio ya no está disponible'}
         body={p.name}
         actions={
-          <ButtonLink to="/c" replace variant="dark">
+          <ButtonLink to="/client" replace variant="dark">
             Ver mi tarjeta
           </ButtonLink>
         }
@@ -81,7 +81,7 @@ export default function PrizeUsePage() {
       tone="dark"
       footer={
         <Link
-          to="/c"
+          to="/client"
           replace
           className="flex min-h-14 w-full items-center justify-center rounded-2xl bg-white/12 font-semibold text-white active:bg-white/20"
         >

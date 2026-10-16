@@ -17,14 +17,14 @@ export default function WorkdayDetailPage() {
   if (stats.isPending)
     return (
       <Screen>
-        <TopBar title="Jornada" backTo="/op/history" />
+        <TopBar title="Jornada" backTo="/admin/history" />
         <LoadingState />
       </Screen>
     );
   if (stats.isError)
     return (
       <Screen>
-        <TopBar title="Jornada" backTo="/op/history" />
+        <TopBar title="Jornada" backTo="/admin/history" />
         <ErrorState error={stats.error} onRetry={() => void stats.refetch()} />
       </Screen>
     );
@@ -46,7 +46,7 @@ export default function WorkdayDetailPage() {
         ) : undefined
       }
     >
-      <TopBar title="Jornada" backTo="/op/history" />
+      <TopBar title="Jornada" backTo="/admin/history" />
       <WorkdayHeader stats={stats.data} />
       <WorkdayBody stats={stats.data} workdayId={workdayId} />
     </Screen>

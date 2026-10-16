@@ -1,6 +1,6 @@
 # Frontend PWA
 
-Client zone (`/c/*`) and operator zone (`/op/*`) in one installable PWA.
+Client zone (`/client/*`) and operator zone (`/admin/*`) in one installable PWA.
 Plan: [`plan-frontend.md`](plan-frontend.md) · Mockups: [`docs/mockups/`](docs/mockups) · Palette: [`docs/brand-palette.png`](docs/brand-palette.png)
 
 ## Stack
@@ -47,8 +47,8 @@ Design rules: every business color comes from the API (`branding.colors`) as CSS
 tints and AA-safe text shades are derived with `color-mix` in `src/index.css`. Never write the
 business name in code (ESLint enforces it).
 
-Performance: operator code is only in `op-*` chunks, which the service worker never precaches, so
-customers never download it. The JS for `/c/claim/:token` is ≈123 KB gzip (budget 150 KB).
+Performance: operator code is only in `admin-*` chunks, which the service worker never precaches, so
+customers never download it. The JS for `/client/claim/:token` is ≈123 KB gzip (budget 150 KB).
 
 ## Local end-to-end testing
 

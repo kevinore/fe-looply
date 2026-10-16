@@ -11,7 +11,7 @@ import { cartCount, productQty, useCart } from './cart';
 import { CheckoutSheet } from './CheckoutSheet';
 import { CustomerBand } from './CustomerBand';
 import { drinks } from './labels';
-import { OpMenuButton, OpNav } from './OpNav';
+import { AdminMenuButton, AdminNav } from './AdminNav';
 import { latestPending, usePendingSales } from './pendingSales';
 import { hasOptions, unitPrice } from './options';
 import { ProductOptionsSheet } from './ProductOptionsSheet';
@@ -87,7 +87,7 @@ export function SaleScreen({ workday: _workday }: { workday: Workday }) {
           Cobrar
         </button>
       </div>
-      <OpNav />
+      <AdminNav />
     </div>
   );
 
@@ -97,7 +97,7 @@ export function SaleScreen({ workday: _workday }: { workday: Workday }) {
         {waiting ? (
           // A QR is still waiting for its scan: one tap shows it again.
           <Link
-            to={`/op/sale/${waiting.id}/qr`}
+            to={`/admin/sale/${waiting.id}/qr`}
             className="flex min-h-11 items-center gap-2 rounded-full bg-brand-primary-soft px-3 text-sm font-semibold text-brand-primary-strong active:brightness-95"
           >
             <LiveDot />
@@ -110,11 +110,11 @@ export function SaleScreen({ workday: _workday }: { workday: Workday }) {
         )}
         <div className="flex items-center gap-2">
           {!customer && (
-            <Link to="/op/search?mode=attach" className={cn(buttonClass('secondary', 'md', false), 'min-h-11 px-4')}>
+            <Link to="/admin/search?mode=attach" className={cn(buttonClass('secondary', 'md', false), 'min-h-11 px-4')}>
               <Icon name="user" size={18} /> Cliente
             </Link>
           )}
-          <OpMenuButton />
+          <AdminMenuButton />
         </div>
       </header>
 

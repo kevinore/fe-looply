@@ -24,7 +24,9 @@ export default function SpinPage() {
   const qc = useQueryClient();
   const claimed = location.state as ClaimedState | null;
 
-  const wheel = useQuery({ queryKey: keys.wheel, queryFn: claimApi.wheel, staleTime: 5 * 60_000 });
+  // Always the current wheel: the owner can change prizes, and the server lands on
+  // a segment index of its own list (a stale order would stop on the wrong label).
+  const wheel = useQuery({ queryKey: keys.wheel, queryFn: claimApi.wheel, staleTime: 0, refetchOnMount: 'always' });
   const me = useQuery(meQuery);
   const card = claimed?.result.card ?? me.data ?? null;
   const spin =
@@ -48,7 +50,7 @@ export default function SpinPage() {
     }));
 
   const goToPrize = (r: SpinResult) => {
-    navigate(`/c/prize/${r.prize_award.id}`, { replace: true, state: { justWon: true } });
+    navigate(`/client/prize/${r.prize_award.id}`, { replace: true, state: { justWon: true } });
   };
 
   const doSpin = async (): Promise<SpinResult | null> => {
@@ -111,7 +113,7 @@ export default function SpinPage() {
         title={unavailable}
         body="Si ya giraste, tu premio está guardado en tu tarjeta."
         actions={
-          <ButtonLink to="/c" replace variant="dark">
+          <ButtonLink to="/client" replace variant="dark">
             Ver mi tarjeta
           </ButtonLink>
         }
@@ -137,7 +139,7 @@ export default function SpinPage() {
             <Button variant="dark" onClick={() => setRevealed(true)}>
               Girar ahora
             </Button>
-            <TextButton onClick={() => navigate('/c', { replace: true })} className="font-medium no-underline">
+            <TextButton onClick={() => navigate('/client', { replace: true })} className="font-medium no-underline">
               o gíralo después desde tu tarjeta
             </TextButton>
           </div>
@@ -170,7 +172,7 @@ export default function SpinPage() {
       tone="soft"
       footer={
         <div>
-          <Button variant="dark" onClick={onSpin} disabled={busy || !wheel.data}>
+          <Button variant="dark" onClick={onSpin} disabled={busy || !wheel.data || wheel.isFetching}>
             Girar
           </Button>
           <p className="mt-3 text-center text-xs text-brand-muted">Si cierras la app, tu premio queda guardado.</p>

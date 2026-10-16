@@ -31,7 +31,7 @@ export default function ConfirmPage() {
   useHoldUpdates('confirm', loading);
 
   // Entered without state (reload): restart the flow from the QR entry.
-  if (!state?.phone) return <Navigate to={`/c/claim/${token}`} replace />;
+  if (!state?.phone) return <Navigate to={`/client/claim/${token}`} replace />;
 
   if (claimState) {
     const copy = CLAIM_STATE_COPY[claimState] ?? CLAIM_STATE_COPY.not_found!;
@@ -40,7 +40,7 @@ export default function ConfirmPage() {
         title={copy.title}
         body={copy.body}
         actions={
-          <ButtonLink to="/c" replace variant="secondary">
+          <ButtonLink to="/client" replace variant="secondary">
             Ir al inicio
           </ButtonLink>
         }
@@ -69,7 +69,7 @@ export default function ConfirmPage() {
       alias: state.typedAlias,
       focusPhone: true,
     };
-    navigate(`/c/register/${token}`, { replace: true, state: back });
+    navigate(`/client/register/${token}`, { replace: true, state: back });
   };
 
   const [a, b] = [state.digits.slice(0, 3) || '3••', state.last4];

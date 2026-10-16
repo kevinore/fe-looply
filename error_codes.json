@@ -23,6 +23,18 @@
     "status": 422,
     "message": "Revisa las opciones del producto."
   },
+  "wheel_total_invalid": {
+    "status": 422,
+    "message": "Los porcentajes de los premios activos deben sumar 100%."
+  },
+  "wheel_size_invalid": {
+    "status": 422,
+    "message": "La ruleta necesita entre 2 y 12 premios activos."
+  },
+  "prize_name_taken": {
+    "status": 422,
+    "message": "Ya hay un premio con ese nombre."
+  },
   "invalid_credentials": {
     "status": 401,
     "message": "Correo o contraseña incorrectos."
@@ -106,6 +118,10 @@
   "spin_not_available": {
     "status": 409,
     "message": "Este giro ya no está disponible."
+  },
+  "prize_locked": {
+    "status": 409,
+    "message": "Este premio ya fue ganado: no puedes cambiar su tipo ni su valor. Desactívalo y crea uno nuevo."
   },
   "claim_expired": {
     "status": 410,

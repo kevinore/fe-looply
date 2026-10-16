@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { errorMessage } from '@/api/errors';
-import type { CardPrize, ClaimResult, Sale } from '@/api/types';
+import type { CardPrize, ClaimResult, OperatorPrize, Sale } from '@/api/types';
 import { keys } from '@/app/keys';
 import { Mascot } from '@/brand/Mascot';
 import { shortDate, timeHM } from '@/lib/dates';
@@ -27,7 +27,7 @@ import { customerQuery, displayProgress, saleQuery, unlinkSale } from '../api';
 import { useCart } from '../cart';
 import { isDeliverable, paymentLabel, prizeUsage } from '../labels';
 import { savedOptionsText } from '../options';
-import { opMeQuery } from '../queries';
+import { adminMeQuery } from '../queries';
 import { RedeemPrizeSheet } from '../RedeemPrizeSheet';
 import { VoidSaleSheet } from '../VoidSaleSheet';
 
@@ -49,7 +49,7 @@ export default function SaleDetailPage() {
     return (
       <Screen>
         <ErrorState error={sale.error} onRetry={() => void sale.refetch()} />
-        <ButtonLink to="/op" variant="dark">
+        <ButtonLink to="/admin" variant="dark">
           Volver a la venta
         </ButtonLink>
       </Screen>
@@ -60,7 +60,7 @@ export default function SaleDetailPage() {
       <Screen className="items-center justify-center gap-4 text-center">
         <h1 className="text-3xl font-semibold">Venta anulada</h1>
         <p className="text-brand-muted">{s.void_reason}</p>
-        <ButtonLink to="/op" variant="dark">
+        <ButtonLink to="/admin" variant="dark">
           Siguiente venta
         </ButtonLink>
       </Screen>
@@ -70,7 +70,7 @@ export default function SaleDetailPage() {
       <Screen className="items-center justify-center gap-4 text-center">
         <h1 className="text-3xl font-semibold">Venta sin cliente</h1>
         <p className="text-brand-muted">Esta venta todavía no está vinculada a un cliente.</p>
-        <ButtonLink to={`/op/sale/${s.id}/qr`} variant="dark">
+        <ButtonLink to={`/admin/sale/${s.id}/qr`} variant="dark">
           Mostrar QR
         </ButtonLink>
       </Screen>
@@ -83,7 +83,7 @@ function LinkedSale({ sale, card, foundBy }: { sale: Sale; card?: ClaimResult['c
   const qc = useQueryClient();
   const c = sale.customer!;
   const customer = useQuery(customerQuery(c.id));
-  const [redeeming, setRedeeming] = useState<CardPrize | null>(null);
+  const [redeeming, setRedeeming] = useState<OperatorPrize | null>(null);
   const [unlinkOpen, setUnlinkOpen] = useState(false);
   const prizeLine = sale.items.find((i) => i.prize_award_id);
   const saleHasPrize = !!prizeLine;
@@ -99,7 +99,7 @@ function LinkedSale({ sale, card, foundBy }: { sale: Sale; card?: ClaimResult['c
     mutationFn: () => unlinkSale(sale.id),
     onSuccess: (updated) => {
       qc.setQueryData(keys.sale(sale.id), updated);
-      navigate(`/op/sale/${sale.id}/qr`, { replace: true });
+      navigate(`/admin/sale/${sale.id}/qr`, { replace: true });
     },
     onError: (e) => {
       setUnlinkOpen(false);
@@ -123,7 +123,7 @@ function LinkedSale({ sale, card, foundBy }: { sale: Sale; card?: ClaimResult['c
       },
       prize.id,
     );
-    navigate('/op');
+    navigate('/admin');
   };
 
   return (
@@ -224,7 +224,7 @@ function LinkedSale({ sale, card, foundBy }: { sale: Sale; card?: ClaimResult['c
         <p className="rounded-xl bg-brand-primary-soft px-3 py-2 text-xs italic">Confirma el nombre en persona antes de redimir.</p>
 
         <div className="mt-auto grid gap-1 pt-4 pb-safe">
-          <ButtonLink to="/op" variant="dark">
+          <ButtonLink to="/admin" variant="dark">
             Siguiente venta
           </ButtonLink>
           <TextButton className="text-brand-primary-strong" onClick={() => setUnlinkOpen(true)}>
@@ -261,7 +261,7 @@ function LinkedSale({ sale, card, foundBy }: { sale: Sale; card?: ClaimResult['c
 /** R4 — Cobrada. */
 function Confirmation({ sale, prizeName }: { sale: Sale; prizeName?: string }) {
   const navigate = useNavigate();
-  const me = useQuery(opMeQuery).data;
+  const me = useQuery(adminMeQuery).data;
   const [voidOpen, setVoidOpen] = useState(false);
   const prizeLine = sale.items.find((i) => i.prize_award_id);
   const c = sale.customer!;
@@ -273,7 +273,7 @@ function Confirmation({ sale, prizeName }: { sale: Sale; prizeName?: string }) {
       className="gap-4"
       footer={
         <div className="grid gap-1">
-          <ButtonLink to="/op" variant="dark">
+          <ButtonLink to="/admin" variant="dark">
             Siguiente venta
           </ButtonLink>
           <TextButton className="underline" onClick={() => setVoidOpen(true)}>
@@ -326,7 +326,7 @@ function Confirmation({ sale, prizeName }: { sale: Sale; prizeName?: string }) {
         <Mascot pose="drink" className="size-16 object-contain" sizes="64px" />
       </div>
 
-      <VoidSaleSheet saleId={sale.id} open={voidOpen} onClose={() => setVoidOpen(false)} onVoided={() => navigate('/op', { replace: true })} />
+      <VoidSaleSheet saleId={sale.id} open={voidOpen} onClose={() => setVoidOpen(false)} onVoided={() => navigate('/admin', { replace: true })} />
     </Screen>
   );
 }

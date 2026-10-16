@@ -9,7 +9,7 @@ import { keys } from './keys';
  * Only this device's own data; nothing about other customers.
  */
 // Not the wheel: a stale segment order would make the wheel stop on the wrong label.
-const PERSISTED: QueryKey[] = [keys.business, keys.me, keys.opMe, keys.products];
+const PERSISTED: QueryKey[] = [keys.business, keys.me, keys.adminMe, keys.products];
 const PREFIX = 'qc:';
 const VERSION = 1;
 const MAX_AGE_MS = 30 * 86_400_000;

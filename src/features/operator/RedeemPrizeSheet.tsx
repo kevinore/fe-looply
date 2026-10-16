@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { errorMessage, isApiError } from '@/api/errors';
-import type { CardPrize, Sale } from '@/api/types';
+import type { CardPrize, OperatorPrize, Sale } from '@/api/types';
 import { keys } from '@/app/keys';
 import { productsQuery } from './queries';
 import { Avatar, BottomSheet, Button, cn, Eyebrow, Money, toast } from '@/ui';
-import { redeemPrize } from './api';
+import { prizeAppliesTo, redeemPrize } from './api';
 import { drinks } from './labels';
 import { OptionGroupsPicker } from './OptionGroupsPicker';
 import { isValidSelection } from './options';
 
 /**
  * Redeem on an already paid sale (M3, F6).
- * - free_item: the operator picks the drink given for free (sent to the API).
+ * - free_item: the operator picks the product given for free (sent to the API).
  * - extra_item: nothing to pick; it is added to today's purchase as a $0 line.
  */
 export function RedeemPrizeSheet({
@@ -23,7 +23,7 @@ export function RedeemPrizeSheet({
   onNeedsNewSale,
 }: {
   sale: Sale;
-  prize: CardPrize | null;
+  prize: OperatorPrize | null;
   foundBy?: string;
   onClose: () => void;
   onNeedsNewSale: (prize: CardPrize) => void;
@@ -32,8 +32,10 @@ export function RedeemPrizeSheet({
   const isFree = prize?.type === 'free_item';
   const products = useQuery({ ...productsQuery, enabled: isFree }).data ?? [];
   const saleDrinks = sale.items.filter((i) => i.product_id);
-  // R17: the free drink can only be a product that takes prizes.
-  const options = products.filter((p) => p.prize_eligible).map((p) => ({ id: p.id, label: p.name }));
+  // R17: the free product can only be one that takes this prize (its category).
+  const options = products
+    .filter((p) => prize && prizeAppliesTo(prize, p))
+    .map((p) => ({ id: p.id, label: p.name }));
   const [choice, setChoice] = useState<string | null>(null);
   const [optionIds, setOptionIds] = useState<string[]>([]);
   const selected = isFree ? (choice ?? options[0]?.id ?? null) : null;
@@ -71,13 +73,13 @@ export function RedeemPrizeSheet({
             </div>
           )}
           <h2 id="redeem-title" className="mb-4 text-2xl leading-tight font-semibold">
-            {isFree ? '¿Qué bebida le das gratis?' : `¿Entregas ${prize.name.toLowerCase()}?`}
+            {isFree ? '¿Qué le das gratis?' : `¿Entregas ${prize.name.toLowerCase()}?`}
           </h2>
           {isFree ? (
             <div
               className="grid max-h-[34dvh] gap-2 overflow-y-auto"
               role="radiogroup"
-              aria-label="Bebida"
+              aria-label="Producto"
             >
               {options.map((o) => (
                 <button
@@ -108,7 +110,7 @@ export function RedeemPrizeSheet({
                   (<b>{saleDrinks.map((i) => `${i.qty}× ${i.label}`).join(', ')}</b>)
                 </>
               )}
-              . Entrégalo junto con la bebida.
+              . Entrégalo junto con su compra.
             </p>
           )}
           {isFree && groups.length > 0 && (
@@ -139,7 +141,7 @@ export function RedeemPrizeSheet({
             disabled={isFree && (!selected || !optionsOk)}
             onClick={() => m.mutate()}
           >
-            {isFree ? 'Entregar bebida gratis' : `Entregar ${prize.name.toLowerCase()}`}
+            {isFree ? 'Entregar gratis' : `Entregar ${prize.name.toLowerCase()}`}
           </Button>
         </>
       )}

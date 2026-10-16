@@ -75,7 +75,7 @@ export default function CardPage() {
 
       {firstSpin && (
         <Link
-          to={`/c/spin/${firstSpin.id}`}
+          to={`/client/spin/${firstSpin.id}`}
           className="mt-3 flex min-h-16 animate-pop items-center gap-3 rounded-2xl bg-brand-secondary p-4 font-semibold text-brand-ink shadow-card active:brightness-95"
         >
           <Icon name="gift" />
@@ -87,7 +87,7 @@ export default function CardPage() {
       )}
 
       <Link
-        to="/c/scan"
+        to="/client/scan"
         className="mt-3 flex min-h-16 items-center gap-3 rounded-2xl bg-brand-ink p-4 text-white active:bg-brand-ink/85"
       >
         <span className="min-w-0 flex-1">

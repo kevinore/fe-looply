@@ -6,7 +6,7 @@ import type { Branding } from '@/api/types';
 import { BrandProvider } from '@/brand/BrandProvider';
 import { ErrorState, LoadingState, Screen } from '@/ui';
 import { ClaimNotices } from './ClaimNotices';
-import { opMeQuery } from './queries';
+import { adminMeQuery } from './queries';
 import { SaleWatcher } from './SaleWatcher';
 
 /** Swaps the manifest so "Add to home screen" from /op opens the operator app. */
@@ -15,18 +15,18 @@ export function useOperatorManifest() {
     const link = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
     if (!link) return;
     const prev = link.getAttribute('href');
-    link.setAttribute('href', '/manifest-op.webmanifest');
+    link.setAttribute('href', '/manifest-admin.webmanifest');
     return () => {
       if (prev) link.setAttribute('href', prev);
     };
   }, []);
 }
 
-/** Guard for /op/* (except login): requires GET /api/op/auth/me. */
+/** Guard for /admin/* (except login): requires GET /api/admin/auth/me. */
 export function OperatorLayout() {
   useOperatorManifest();
   const location = useLocation();
-  const me = useQuery(opMeQuery);
+  const me = useQuery(adminMeQuery);
 
   if (me.isPending) {
     return (
@@ -38,7 +38,7 @@ export function OperatorLayout() {
   if (me.isError) {
     if (isApiError(me.error, 'not_authenticated')) {
       const next = encodeURIComponent(location.pathname + location.search);
-      return <Navigate to={`/op/login?next=${next}`} replace />;
+      return <Navigate to={`/admin/login?next=${next}`} replace />;
     }
     return (
       <Screen>

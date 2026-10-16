@@ -39,14 +39,14 @@ export default function SaleQrPage() {
 
   // Already claimed (e.g. opened from history): show the linked sale instead.
   useEffect(() => {
-    if (sale.data?.status === 'claimed') navigate(`/op/sale/${saleId}`, { replace: true });
+    if (sale.data?.status === 'claimed') navigate(`/admin/sale/${saleId}`, { replace: true });
   }, [sale.data?.status, navigate, saleId]);
 
   const shown = useRef(false);
   useEffect(() => {
     if (paid && !shown.current) {
       shown.current = true;
-      sendEvent('sale_qr_shown', {}, saleId, 'op');
+      sendEvent('sale_qr_shown', {}, saleId, 'admin');
     }
   }, [paid, saleId]);
 
@@ -60,7 +60,7 @@ export default function SaleQrPage() {
     return (
       <Screen>
         <ErrorState error={sale.error} onRetry={() => void sale.refetch()} />
-        <ButtonLink to="/op" variant="dark">
+        <ButtonLink to="/admin" variant="dark">
           Volver a la venta
         </ButtonLink>
       </Screen>
@@ -73,7 +73,7 @@ export default function SaleQrPage() {
       <Screen className="items-center justify-center gap-4 text-center">
         <h1 className="text-3xl font-semibold">Venta anulada</h1>
         <p className="text-brand-muted">{s.void_reason}</p>
-        <ButtonLink to="/op" variant="dark">
+        <ButtonLink to="/admin" variant="dark">
           Siguiente venta
         </ButtonLink>
       </Screen>
@@ -86,15 +86,15 @@ export default function SaleQrPage() {
       footer={
         <div className="grid gap-1">
           <div className="grid grid-cols-2 gap-2 whitespace-nowrap">
-            <ButtonLink to={`/op/search?saleId=${saleId}`} variant="light" className="px-3">
+            <ButtonLink to={`/admin/search?saleId=${saleId}`} variant="light" className="px-3">
               Buscar cliente
             </ButtonLink>
             <Button
               variant="dark"
               className="px-3"
               onClick={() => {
-                sendEvent('sale_skipped', {}, saleId, 'op');
-                navigate('/op');
+                sendEvent('sale_skipped', {}, saleId, 'admin');
+                navigate('/admin');
               }}
             >
               Siguiente venta
@@ -133,7 +133,7 @@ export default function SaleQrPage() {
         onClose={() => setVoidOpen(false)}
         onVoided={() => {
           forget(saleId);
-          navigate('/op', { replace: true });
+          navigate('/admin', { replace: true });
         }}
       />
     </Screen>

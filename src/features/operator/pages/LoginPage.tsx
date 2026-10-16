@@ -13,7 +13,7 @@ import { useOperatorManifest } from '../OperatorLayout';
 
 /** Only allow internal operator paths as `next` (no open redirects). */
 function safeNext(next: string | null): string {
-  return next && next.startsWith('/op') && !next.startsWith('//') ? next : '/op';
+  return next && next.startsWith('/admin') && !next.startsWith('//') ? next : '/admin';
 }
 
 export default function LoginPage() {
@@ -26,9 +26,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
 
   const login = useMutation({
-    mutationFn: () => unwrap(api.POST('/api/op/auth/login', { body: { email: email.trim(), password } })),
+    mutationFn: () => unwrap(api.POST('/api/admin/auth/login', { body: { email: email.trim(), password } })),
     onSuccess: (me) => {
-      qc.setQueryData(keys.opMe, me);
+      qc.setQueryData(keys.adminMe, me);
       navigate(safeNext(params.get('next')), { replace: true });
     },
   });

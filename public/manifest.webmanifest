@@ -1,10 +1,10 @@
 {
-  "id": "/c",
+  "id": "/client",
   "name": "Qué Fresh",
   "short_name": "Qué Fresh",
   "description": "Tu tarjeta de compras y premios.",
   "lang": "es-CO",
-  "start_url": "/c",
+  "start_url": "/client",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

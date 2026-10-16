@@ -17,7 +17,7 @@ import {
 } from '@/ui';
 import { historyQuery } from '../api';
 import { dayTypeLabel, drinks } from '../labels';
-import { opMeQuery } from '../queries';
+import { adminMeQuery } from '../queries';
 
 /** Jornadas: one per day, newest first; each opens its detail (8.13). */
 export default function HistoryPage() {
@@ -25,7 +25,7 @@ export default function HistoryPage() {
   const [to, setTo] = useState(todayYmd());
   const valid = from <= to;
   const history = useQuery({ ...historyQuery(from, to), enabled: valid });
-  const me = useQuery(opMeQuery).data;
+  const me = useQuery(adminMeQuery).data;
   const isOwner = me?.operator.role === 'owner';
 
   const dateInput = 'mt-1 min-h-12 w-full rounded-2xl bg-white px-3 font-semibold shadow-card';
@@ -42,7 +42,7 @@ export default function HistoryPage() {
 
   return (
     <Screen width="medium" className="gap-4">
-      <TopBar title="Jornadas" backTo="/op" />
+      <TopBar title="Jornadas" backTo="/admin" />
       <div className="grid grid-cols-2 gap-3">
         <label className="text-sm text-brand-muted">
           Desde
@@ -89,7 +89,7 @@ export default function HistoryPage() {
             </div>
             {isOwner && (
               <a
-                href={`/api/op/export/sales.csv?from=${from}&to=${to}`}
+                href={`/api/admin/export/sales.csv?from=${from}&to=${to}`}
                 className={cn(buttonClass('secondary', 'md', false), 'min-h-11 px-3')}
                 download
               >
@@ -102,7 +102,7 @@ export default function HistoryPage() {
             {workdays.map((w) => (
               <li key={w.workday_id}>
                 <Link
-                  to={`/op/workdays/${w.workday_id}`}
+                  to={`/admin/workdays/${w.workday_id}`}
                   className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-card active:bg-brand-field"
                 >
                   <div className="min-w-0 flex-1">

@@ -282,7 +282,7 @@ export function WorkdaySales({ workdayId }: { workdayId: string }) {
             return (
               <li key={s.id}>
                 <Link
-                  to={`/op/sale/${s.id}`}
+                  to={`/admin/sale/${s.id}`}
                   className={cn(
                     'flex items-center gap-3 rounded-2xl bg-white p-3 shadow-card active:bg-brand-field',
                     isVoid && 'opacity-70',

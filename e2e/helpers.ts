@@ -15,15 +15,15 @@ export function randomPhone(): string {
 
 /** Logs the operator in on an API request context (cookie is kept on it). */
 export async function operatorLogin(request: APIRequestContext) {
-  const res = await request.post('/api/op/auth/login', { data: OPERATOR, headers: JSON_HEADERS });
+  const res = await request.post('/api/admin/auth/login', { data: OPERATOR, headers: JSON_HEADERS });
   expect(res.ok(), await res.text()).toBeTruthy();
 }
 
 /** Opens today's workday if needed. */
 export async function ensureWorkdayOpen(request: APIRequestContext) {
-  const current = await request.get('/api/op/workdays/current');
+  const current = await request.get('/api/admin/workdays/current');
   if ((await current.json()) !== null) return;
-  const res = await request.post('/api/op/workdays/open', { headers: JSON_HEADERS });
+  const res = await request.post('/api/admin/workdays/open', { headers: JSON_HEADERS });
   expect(res.ok(), await res.text()).toBeTruthy();
 }
 
@@ -32,10 +32,10 @@ type Sale = { id: string; claim_url: string; total_cop: number };
 /** Creates a paid sale through the API and returns it (with claim_url). */
 export async function createSale(request: APIRequestContext, lines = [{ index: 0, qty: 2 }]): Promise<Sale> {
   type Product = { id: string; option_groups: Array<{ min_select: number; options: Array<{ id: string }> }> };
-  const products = (await (await request.get('/api/op/products')).json()) as Product[];
+  const products = (await (await request.get('/api/admin/products')).json()) as Product[];
   // Products with options get the first choices that satisfy each group.
   const optionIds = (p: Product) => p.option_groups.flatMap((g) => g.options.slice(0, g.min_select).map((o) => o.id));
-  const res = await request.post('/api/op/sales', {
+  const res = await request.post('/api/admin/sales', {
     headers: { ...JSON_HEADERS, 'Idempotency-Key': randomUUID() },
     data: {
       items: lines.map((l) => ({
@@ -57,9 +57,9 @@ export function claimPath(sale: Sale): string {
 
 /** Logs the operator in through the UI. */
 export async function operatorLoginUI(page: Page) {
-  await page.goto('/op/login');
+  await page.goto('/admin/login');
   await page.getByLabel(/correo/i).fill(OPERATOR.email);
   await page.getByLabel(/contraseña/i).fill(OPERATOR.password);
   await page.getByRole('button', { name: /ingresar|entrar/i }).click();
-  await page.waitForURL(/\/op(\?|$|\/(?!login))/);
+  await page.waitForURL(/\/admin(\?|$|\/(?!login))/);
 }

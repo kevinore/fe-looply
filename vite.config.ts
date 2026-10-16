@@ -31,7 +31,7 @@ export default defineConfig({
           'assets/*-latin-{wght,soft}-normal-*.woff2',
           'icons/icon-192.png',
         ],
-        globIgnores: ['assets/op-*'],
+        globIgnores: ['assets/admin-*'],
         // Never cache /api/*. Hashed assets and brand images are immutable.
         runtimeCaching: [
           {
@@ -87,8 +87,8 @@ export default defineConfig({
           const operatorOnly =
             id.includes('/src/features/operator/') ||
             chunk.moduleIds.every((m) => /\/node_modules\/(qrcode|dijkstrajs|pngjs)\//.test(m));
-          if (operatorOnly) return 'assets/op-[name]-[hash].js';
-          if (id.includes('/src/features/customer/')) return 'assets/c-[name]-[hash].js';
+          if (operatorOnly) return 'assets/admin-[name]-[hash].js';
+          if (id.includes('/src/features/customer/')) return 'assets/client-[name]-[hash].js';
           return 'assets/[name]-[hash].js';
         },
       },

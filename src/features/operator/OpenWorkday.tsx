@@ -6,13 +6,13 @@ import { Link } from 'react-router';
 import { Button, ButtonLink, Eyebrow, Icon, Pill, Screen } from '@/ui';
 import { historyQuery } from './api';
 import { dayTypeLabel, drinks, weatherText } from './labels';
-import { OpMenuButton } from './OpNav';
-import { opMeQuery } from './queries';
+import { AdminMenuButton } from './AdminNav';
+import { adminMeQuery } from './queries';
 import { useOpenWorkday } from './useOpenWorkday';
 
 /** 01 — Abrir jornada. */
 export function OpenWorkday() {
-  const me = useQuery(opMeQuery).data;
+  const me = useQuery(adminMeQuery).data;
   const history = useQuery(historyQuery(todayYmd(-60), todayYmd()));
   const workdays = history.data?.workdays ?? [];
   const last = [...workdays].sort((a, b) => b.local_date.localeCompare(a.local_date))[0];
@@ -34,7 +34,7 @@ export function OpenWorkday() {
               {me.operator.name} · {me.operator.role === 'owner' ? 'dueño' : 'operador'}
             </Pill>
           )}
-          <OpMenuButton />
+          <AdminMenuButton />
         </div>
       </header>
 
@@ -71,7 +71,7 @@ export function OpenWorkday() {
 
       {last && !today && (
         <Link
-          to={`/op/workdays/${last.workday_id}`}
+          to={`/admin/workdays/${last.workday_id}`}
           className="mx-auto flex min-h-11 items-center gap-1 text-xs text-brand-muted underline-offset-2 active:underline"
         >
           Última jornada · {formatCop(last.revenue_cop)} · {last.sales} ventas
@@ -92,7 +92,7 @@ export function OpenWorkday() {
           <Button variant="success" loading={m.isPending} onClick={() => m.mutate()}>
             Reabrir jornada
           </Button>
-          <ButtonLink to={`/op/workdays/${today.workday_id}`} variant="secondary">
+          <ButtonLink to={`/admin/workdays/${today.workday_id}`} variant="secondary">
             Ver lo vendido hoy
           </ButtonLink>
         </div>

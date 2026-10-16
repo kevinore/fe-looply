@@ -9,7 +9,7 @@ import { create } from 'zustand';
  * WATCH_MS (plan §8.5); reopening the QR starts it again.
  */
 export const WATCH_MS = 10 * 60_000;
-const STORAGE_KEY = 'op:pending-sales';
+const STORAGE_KEY = 'admin:pending-sales';
 
 export type PendingSale = { id: string; totalCop: number; since: number };
 

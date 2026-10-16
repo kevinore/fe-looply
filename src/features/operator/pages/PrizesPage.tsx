@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { daysUntil } from '@/lib/dates';
-import { Avatar, EmptyState, ErrorState, LoadingState, Screen, Tabs } from '@/ui';
+import { Avatar, EmptyState, ErrorState, Icon, LoadingState, Screen, Tabs } from '@/ui';
 import { pendingQuery, type PendingFilter } from '../api';
-import { OpMenuButton, OpNav } from '../OpNav';
+import { AdminMenuButton, AdminNav } from '../AdminNav';
+import { adminMeQuery } from '../queries';
 
 function expiresIn(date: string) {
   const d = daysUntil(date);
@@ -19,10 +21,12 @@ export default function PrizesPage() {
   const free = useQuery(pendingQuery('free')).data;
   const customers = all ? new Set(all.map((p) => p.customer_id)).size : null;
 
+  const isOwner = useQuery(adminMeQuery).data?.operator.role === 'owner';
+
   const count = (n: number | undefined) => (n === undefined ? '' : ` · ${n}`);
 
   return (
-    <Screen width="medium" footer={<OpNav />} className="gap-4">
+    <Screen width="medium" footer={<AdminNav />} className="gap-4">
       <header className="flex items-start justify-between gap-3 pt-2">
         <div>
           <h1 className="text-3xl font-semibold">Premios pendientes</h1>
@@ -32,8 +36,23 @@ export default function PrizesPage() {
             </p>
           )}
         </div>
-        <OpMenuButton />
+        <AdminMenuButton />
       </header>
+      {isOwner && (
+        <Link
+          to="/admin/wheel"
+          className="flex items-center gap-3 rounded-2xl bg-white p-3 font-semibold shadow-card active:bg-brand-field"
+        >
+          <span className="flex size-10 items-center justify-center rounded-full bg-brand-primary">
+            <Icon name="gift" size={20} />
+          </span>
+          <span className="flex-1 leading-tight">
+            Ruleta de premios
+            <span className="block text-sm font-normal text-brand-muted">Define los premios y su probabilidad</span>
+          </span>
+          <Icon name="chevronRight" size={20} />
+        </Link>
+      )}
       <Tabs
         label="Filtro de premios"
         value={filter}

@@ -4,9 +4,9 @@ export function CustomerNav() {
   return (
     <BottomNav
       items={[
-        { to: '/c', label: 'Tarjeta', icon: 'card', end: true },
-        { to: '/c/prizes', label: 'Premios', icon: 'gift' },
-        { to: '/c/history', label: 'Historial', icon: 'history' },
+        { to: '/client', label: 'Tarjeta', icon: 'card', end: true },
+        { to: '/client/prizes', label: 'Premios', icon: 'gift' },
+        { to: '/client/history', label: 'Historial', icon: 'history' },
       ]}
     />
   );

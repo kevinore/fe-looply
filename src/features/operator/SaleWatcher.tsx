@@ -28,7 +28,7 @@ export function SaleWatcher() {
     queries: ids.map((id) => ({
       queryKey: keys.saleStatus(id),
       queryFn: () =>
-        unwrap(api.GET('/api/op/sales/{sale_id}/status', { params: { path: { sale_id: id } } })),
+        unwrap(api.GET('/api/admin/sales/{sale_id}/status', { params: { path: { sale_id: id } } })),
       refetchInterval: POLL_MS,
       refetchIntervalInBackground: false,
       staleTime: 0,
@@ -47,7 +47,7 @@ export function SaleWatcher() {
       if (status === 'claimed' && r.data?.customer) {
         vibrate(40);
         push({ saleId: id, customer: r.data.customer, totalCop: items[id]?.totalCop ?? null });
-        if (pathname === `/op/sale/${id}/qr`) navigate('/op', { replace: true });
+        if (pathname === `/admin/sale/${id}/qr`) navigate('/admin', { replace: true });
       }
     });
   });

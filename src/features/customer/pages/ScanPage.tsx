@@ -34,7 +34,7 @@ export default function ScanPage() {
           const token = claimTokenFromQr(result.data, window.location.origin);
           if (token) {
             s.stop();
-            navigate(`/c/claim/${token}`, { replace: true });
+            navigate(`/client/claim/${token}`, { replace: true });
           } else {
             setInvalid(true);
             window.clearTimeout(invalidTimer);
@@ -79,7 +79,7 @@ export default function ScanPage() {
           <button
             type="button"
             aria-label="Cerrar"
-            onClick={() => navigate('/c', { replace: true })}
+            onClick={() => navigate('/client', { replace: true })}
             className="flex size-11 items-center justify-center rounded-full bg-white/10 active:bg-white/20"
           >
             <Icon name="x" size={20} />

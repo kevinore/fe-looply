@@ -1,10 +1,10 @@
 {
-  "id": "/op",
+  "id": "/admin",
   "name": "Qué Fresh · Operador",
   "short_name": "Operador",
   "description": "Ventas, clientes y cierre de jornada.",
   "lang": "es-CO",
-  "start_url": "/op",
+  "start_url": "/admin",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

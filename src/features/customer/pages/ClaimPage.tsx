@@ -45,7 +45,7 @@ export default function ClaimPage() {
         return;
       }
       if (!me) {
-        navigate(`/c/register/${token}`, { replace: true, state: { preview } });
+        navigate(`/client/register/${token}`, { replace: true, state: { preview } });
         return;
       }
       const result = await claimApi.claim(token);
@@ -72,11 +72,11 @@ export default function ClaimPage() {
         body={copy.body}
         actions={
           view.hasSession ? (
-            <ButtonLink to="/c" replace variant="dark">
+            <ButtonLink to="/client" replace variant="dark">
               Ver mi tarjeta
             </ButtonLink>
           ) : (
-            <ButtonLink to="/c" replace variant="secondary">
+            <ButtonLink to="/client" replace variant="secondary">
               Ir al inicio
             </ButtonLink>
           )

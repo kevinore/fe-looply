@@ -3,12 +3,12 @@ import type { Product } from '@/api/types';
 import { shortDate } from '@/lib/dates';
 import { formatCop } from '@/lib/money';
 import { BottomSheet, Button, cn, Money } from '@/ui';
-import { estimateDiscount } from './api';
+import { estimateDiscount, prizeAppliesTo } from './api';
 import { useCart } from './cart';
 import { unitPrice } from './options';
 import { prizeUsage } from './labels';
 
-/** "Premios de {alias}" (R2): choose prize and the drink it applies to. */
+/** "Premios de {alias}" (R2): choose prize and the product it applies to. */
 export function ApplyPrizeSheet({ open, onClose, products }: { open: boolean; onClose: () => void; products: Product[] }) {
   const customer = useCart((s) => s.customer);
   const lines = useCart((s) => s.lines);
@@ -17,11 +17,16 @@ export function ApplyPrizeSheet({ open, onClose, products }: { open: boolean; on
   const setPrize = useCart((s) => s.setPrize);
 
   const prizes = customer?.active_prizes ?? [];
+  const [awardId, setAwardId] = useState<string | null>(null);
+  const [productId, setProductId] = useState<string | null>(null);
+  const selectedAward = awardId ?? current?.awardId ?? preselected ?? prizes[0]?.id ?? null;
+  const prize = prizes.find((p) => p.id === selectedAward);
+
   // Each product at the price of its most expensive line: the backend applies the
   // prize to that line when the product is in the cart with different options.
-  // R17: prizes only go on products that take them (not e.g. ice creams).
+  // R17: only products that take this prize (e.g. ice creams for a free ice cream).
   const inCart = products
-    .filter((p) => p.prize_eligible)
+    .filter((p) => prize && prizeAppliesTo(prize, p))
     .flatMap((p) => {
       const units = Object.values(lines).filter((l) => l.productId === p.id);
       if (units.length === 0) return [];
@@ -29,14 +34,13 @@ export function ApplyPrizeSheet({ open, onClose, products }: { open: boolean; on
     })
     .sort((a, b) => b.price_cop - a.price_cop);
 
-  const [awardId, setAwardId] = useState<string | null>(null);
-  const [productId, setProductId] = useState<string | null>(null);
-  const selectedAward = awardId ?? current?.awardId ?? preselected ?? prizes[0]?.id ?? null;
-  // Suggest the most expensive drink in the cart (plan §8.9).
+  // Suggest the most expensive product in the cart (plan §8.9).
   const selectedProduct =
-    (productId && inCart.some((p) => p.id === productId) ? productId : null) ?? current?.targetProductId ?? inCart[0]?.id ?? null;
+    (productId && inCart.some((p) => p.id === productId) ? productId : null) ??
+    (current && inCart.some((p) => p.id === current.targetProductId) ? current.targetProductId : null) ??
+    inCart[0]?.id ??
+    null;
 
-  const prize = prizes.find((p) => p.id === selectedAward);
   const product = inCart.find((p) => p.id === selectedProduct);
   const estimate = prize ? estimateDiscount(prize, product) : null;
   const cap = prize?.max_value_cop ?? null;
@@ -80,11 +84,11 @@ export function ApplyPrizeSheet({ open, onClose, products }: { open: boolean; on
         </div>
       </fieldset>
 
-      <p className="mt-5 mb-2 text-sm font-semibold">¿A qué bebida?</p>
+      <p className="mt-5 mb-2 text-sm font-semibold">¿A qué producto?</p>
       {inCart.length === 0 ? (
-        <p className="rounded-2xl bg-brand-field p-4 text-sm text-brand-muted">Agrega bebidas al carrito para aplicar el premio.</p>
+        <p className="rounded-2xl bg-brand-field p-4 text-sm text-brand-muted">Agrega al carrito un producto al que aplique este premio.</p>
       ) : (
-        <div className="grid gap-2" role="radiogroup" aria-label="Bebida">
+        <div className="grid gap-2" role="radiogroup" aria-label="Producto">
           {inCart.map((p) => {
             const sel = p.id === selectedProduct;
             const est = prize ? estimateDiscount(prize, p) : null;
@@ -117,7 +121,7 @@ export function ApplyPrizeSheet({ open, onClose, products }: { open: boolean; on
         </div>
       )}
       <p className="mt-2 text-center text-xs text-brand-muted">
-        Se sugiere la bebida más cara.{cap ? ` Tope en bebida gratis: ${formatCop(cap)}.` : ''}
+        Se sugiere el más caro.{cap ? ` Tope del premio: ${formatCop(cap)}.` : ''}
         {estimate === null && prize?.type !== 'extra_item' ? ' El descuento se calcula al cobrar.' : ''}
       </p>
 

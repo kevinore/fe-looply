@@ -27,7 +27,7 @@ export default function PrizePage() {
   if (prize.isError) {
     return (
       <Screen tone="soft">
-        <TopBar backTo="/c" />
+        <TopBar backTo="/client" />
         <ErrorState error={prize.error} onRetry={() => void prize.refetch()} />
       </Screen>
     );
@@ -35,7 +35,7 @@ export default function PrizePage() {
 
   const p = prize.data;
   const cardLink = (
-    <ButtonLink to="/c" replace variant="dark">
+    <ButtonLink to="/client" replace variant="dark">
       Ver mi tarjeta
     </ButtonLink>
   );
@@ -50,10 +50,10 @@ export default function PrizePage() {
         tone="mint"
         footer={
           <div className="grid gap-2">
-            <ButtonLink to={`/c/prize/${p.id}/use`} variant="dark">
+            <ButtonLink to={`/client/prize/${p.id}/use`} variant="dark">
               Usar ahora
             </ButtonLink>
-            <ButtonLink to="/c" replace variant="secondary">
+            <ButtonLink to="/client" replace variant="secondary">
               Guardar para otra visita
             </ButtonLink>
           </div>
@@ -79,16 +79,16 @@ export default function PrizePage() {
   // C6 · detail from the card
   const days = daysUntil(p.expires_at);
   const steps = [
-    businessName ? `Pide tu bebida en el punto ${businessName}.` : 'Pide tu bebida.',
+    businessName ? `Haz tu pedido en el punto ${businessName}.` : 'Haz tu pedido.',
     'Dile tu nombre al operador. Él lo redime desde tu ficha.',
-    'Máximo un premio por compra, sobre una bebida.',
+    'Máximo un premio por compra.',
   ];
   return (
     <Screen
       tone="dark"
       footer={
         <div className="grid gap-3">
-          <ButtonLink to={`/c/prize/${p.id}/use`} variant="primary">
+          <ButtonLink to={`/client/prize/${p.id}/use`} variant="primary">
             Usar ahora
           </ButtonLink>
           <p className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 text-sm font-medium text-white/85">
@@ -97,7 +97,7 @@ export default function PrizePage() {
         </div>
       }
     >
-      <TopBar title="Premio" backTo="/c" dark />
+      <TopBar title="Premio" backTo="/client" dark />
       <div className="mt-4 rounded-card bg-brand-primary-soft p-5 text-center text-brand-ink">
         <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-brand-primary text-xl font-bold">
           {prizeBadge(p.type, p.short_label)}

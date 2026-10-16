@@ -27,9 +27,9 @@ export default function InstallPage() {
     sendEvent('install_prompt_shown', { platform: ios ? (isIOSChrome() ? 'ios_chrome' : 'ios_safari') : 'android' });
   }, [supported, ios]);
 
-  if (!supported) return <Navigate to="/c" replace />;
+  if (!supported) return <Navigate to="/client" replace />;
 
-  const leave = () => navigate('/c', { replace: true });
+  const leave = () => navigate('/client', { replace: true });
 
   const install = async () => {
     setBusy(true);

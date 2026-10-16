@@ -36,19 +36,19 @@ test.beforeAll(async ({ playwright, baseURL }) => {
 test('F1 · primera compra: registro → ruleta → premio; el operador la ve vinculada', async ({ page }) => {
   const sale = await createSale(request);
   await page.goto(claimPath(sale));
-  await page.waitForURL(/\/c\/register\//);
+  await page.waitForURL(/\/client\/register\//);
   await register(page, phone, alias);
 
-  await page.waitForURL(/\/c\/spin\//);
+  await page.waitForURL(/\/client\/spin\//);
   await expect(page.getByRole('heading', { name: `Gira, ${alias}.` })).toBeVisible();
   await page.getByRole('button', { name: 'Girar', exact: true }).click();
 
-  await page.waitForURL(/\/c\/prize\//, { timeout: 15_000 });
+  await page.waitForURL(/\/client\/prize\//, { timeout: 15_000 });
   await expect(page.getByText('¡Ganaste!')).toBeVisible();
   await page.getByRole('link', { name: 'Guardar para otra visita' }).click();
-  await page.waitForURL(/\/c(\/install)?$/);
+  await page.waitForURL(/\/client(\/install)?$/);
 
-  const status = await (await request.get(`/api/op/sales/${sale.id}/status`)).json();
+  const status = await (await request.get(`/api/admin/sales/${sale.id}/status`)).json();
   expect(status.status).toBe('claimed');
   expect(status.customer.alias).toBe(alias);
 });
@@ -58,35 +58,35 @@ test('F2 · compra con sesión abierta: el QR suma sin pedir datos', async ({ br
   const first = await createSale(request);
   const customer = await newPage(browser, info.project);
   await customer.goto(claimPath(first));
-  await customer.waitForURL(/\/c\/(register|confirm)\//);
+  await customer.waitForURL(/\/client\/(register|confirm)\//);
   // New context has no cookie: identify through "¿Eres …?" to get a session.
   await register(customer, phone, alias);
-  await customer.waitForURL(/\/c\/confirm\//);
+  await customer.waitForURL(/\/client\/confirm\//);
   await customer.getByRole('button', { name: 'Sí, soy yo' }).click();
-  await customer.waitForURL(/\/c\/(claimed|spin\/)/);
+  await customer.waitForURL(/\/client\/(claimed|spin\/)/);
 
   const second = await createSale(request);
   await customer.goto(claimPath(second));
-  await customer.waitForURL(/\/c\/(claimed|spin\/)/);
+  await customer.waitForURL(/\/client\/(claimed|spin\/)/);
   if (customer.url().includes('/claimed')) {
     // R8: every sale is a stamp today; the "already counted" copy only appears if
     // the backend's stamp rule goes back to one per workday.
     await expect(customer.getByText(/\+1 compra|Ya sumaste tu compra de hoy/)).toBeVisible();
   }
-  expect((await (await request.get(`/api/op/sales/${second.id}/status`)).json()).status).toBe('claimed');
+  expect((await (await request.get(`/api/admin/sales/${second.id}/status`)).json()).status).toBe('claimed');
 });
 
 test('F3 · cliente sin sesión con celular existente: ¿Eres …? → sí', async ({ browser }, info) => {
   const sale = await createSale(request);
   const customer = await newPage(browser, info.project);
   await customer.goto(claimPath(sale));
-  await customer.waitForURL(/\/c\/register\//);
+  await customer.waitForURL(/\/client\/register\//);
   await register(customer, phone, 'Otro');
-  await customer.waitForURL(/\/c\/confirm\//);
+  await customer.waitForURL(/\/client\/confirm\//);
   await expect(customer.getByRole('heading', { name: new RegExp(`¿Eres ${alias}\\?`) })).toBeVisible();
   await expect(customer.getByText(phone.slice(-4))).toBeVisible();
   await customer.getByRole('button', { name: 'Sí, soy yo' }).click();
-  await customer.waitForURL(/\/c\/claimed/);
+  await customer.waitForURL(/\/client\/claimed/);
   await expect(customer.getByRole('button', { name: 'Listo' })).toBeVisible();
 });
 
@@ -94,19 +94,19 @@ test('Errores · QR ya reclamado y QR anulado', async ({ browser }, info) => {
   const sale = await createSale(request);
   const customer = await newPage(browser, info.project);
   await customer.goto(claimPath(sale));
-  await customer.waitForURL(/\/c\/register\//);
+  await customer.waitForURL(/\/client\/register\//);
   await register(customer, phone, alias);
-  await customer.waitForURL(/\/c\/confirm\//);
+  await customer.waitForURL(/\/client\/confirm\//);
   await customer.getByRole('button', { name: 'Sí, soy yo' }).click();
   // 1 stamp per sale (R8): this is the customer's 5th purchase, which unlocks a spin.
-  await customer.waitForURL(/\/c\/(claimed|spin\/)/);
+  await customer.waitForURL(/\/client\/(claimed|spin\/)/);
 
   const again = await newPage(browser, info.project);
   await again.goto(claimPath(sale));
   await expect(again.getByText('Esta compra ya fue reclamada')).toBeVisible();
 
   const voided = await createSale(request);
-  const res = await request.post(`/api/op/sales/${voided.id}/void`, {
+  const res = await request.post(`/api/admin/sales/${voided.id}/void`, {
     headers: { 'Content-Type': 'application/json' },
     data: { reason: 'Prueba e2e' },
   });
@@ -118,7 +118,7 @@ test('Errores · QR ya reclamado y QR anulado', async ({ browser }, info) => {
 test('Errores · celular inválido no habilita el registro', async ({ page }) => {
   const sale = await createSale(request);
   await page.goto(claimPath(sale));
-  await page.waitForURL(/\/c\/register\//);
+  await page.waitForURL(/\/client\/register\//);
   await page.getByLabel('Celular').fill('6011234567');
   await page.getByLabel('¿Cómo te llamas?').fill('Ana');
   await page.getByRole('checkbox').check();
@@ -129,28 +129,28 @@ test('F4 · venta sin escaneo: cobrar → siguiente venta → buscar por 4 dígi
   await operatorLoginUI(page);
   // A layered drink: base and tea are chosen before it goes into the cart.
   await page.getByRole('button', { name: /Berry Bliss/ }).click();
-  await page.getByRole('radio', { name: 'Avena' }).click();
+  await page.getByRole('radio', { name: 'Leche de Avena' }).click();
   await page.getByRole('radio', { name: 'Matcha' }).click();
   await page.getByRole('button', { name: /^Agregar/ }).click();
   await page.getByRole('button', { name: 'Cobrar', exact: true }).click();
-  await expect(page.getByText('Avena · Matcha')).toBeVisible();
+  await expect(page.getByText('Leche de Avena · Matcha')).toBeVisible();
   await page.getByRole('button', { name: 'Cobrar y mostrar QR' }).click();
-  await page.waitForURL(/\/op\/sale\/[^/]+\/qr$/);
+  await page.waitForURL(/\/admin\/sale\/[^/]+\/qr$/);
   const saleId = page.url().split('/').at(-2)!;
   await expect(page.getByText(/Esperando escaneo/)).toBeVisible();
 
   await page.getByRole('link', { name: 'Buscar cliente' }).or(page.getByRole('button', { name: 'Buscar cliente' })).click();
-  await page.waitForURL(/\/op\/search/);
+  await page.waitForURL(/\/admin\/search/);
   for (const d of phone.slice(-4)) await page.getByRole('button', { name: d, exact: true }).click();
   await page.getByRole('button', { name: new RegExp(alias) }).click();
-  await page.waitForURL(new RegExp(`/op/sale/${saleId}$`));
+  await page.waitForURL(new RegExp(`/admin/sale/${saleId}$`));
   await expect(page.getByText(alias).first()).toBeVisible();
 });
 
 test('F7 · resumen de la jornada', async ({ page }) => {
   // Reuse the API session (login is rate-limited per email).
   await page.context().addCookies((await request.storageState()).cookies);
-  await page.goto('/op/summary');
+  await page.goto('/admin/summary');
   await expect(page.getByText('Ventas vinculadas')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Ventas por hora' })).toBeVisible();
   await expect(page.getByText('ticket promedio')).toBeVisible();

@@ -25,13 +25,13 @@
         }
       }
     },
-    "/api/op/auth/login": {
+    "/api/admin/auth/login": {
       "post": {
         "tags": [
-          "op: auth"
+          "admin: auth"
         ],
         "summary": "Login",
-        "operationId": "login_api_op_auth_login_post",
+        "operationId": "login_api_admin_auth_login_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -66,13 +66,13 @@
         }
       }
     },
-    "/api/op/auth/logout": {
+    "/api/admin/auth/logout": {
       "post": {
         "tags": [
-          "op: auth"
+          "admin: auth"
         ],
         "summary": "Logout",
-        "operationId": "logout_api_op_auth_logout_post",
+        "operationId": "logout_api_admin_auth_logout_post",
         "responses": {
           "204": {
             "description": "Successful Response"
@@ -80,13 +80,13 @@
         }
       }
     },
-    "/api/op/auth/me": {
+    "/api/admin/auth/me": {
       "get": {
         "tags": [
-          "op: auth"
+          "admin: auth"
         ],
         "summary": "Me",
-        "operationId": "me_api_op_auth_me_get",
+        "operationId": "me_api_admin_auth_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -101,13 +101,13 @@
         }
       }
     },
-    "/api/op/workdays/current": {
+    "/api/admin/workdays/current": {
       "get": {
         "tags": [
-          "op: workdays"
+          "admin: workdays"
         ],
         "summary": "Current",
-        "operationId": "current_api_op_workdays_current_get",
+        "operationId": "current_api_admin_workdays_current_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -122,7 +122,7 @@
                       "type": "null"
                     }
                   ],
-                  "title": "Response Current Api Op Workdays Current Get"
+                  "title": "Response Current Api Admin Workdays Current Get"
                 }
               }
             }
@@ -130,14 +130,14 @@
         }
       }
     },
-    "/api/op/workdays/open": {
+    "/api/admin/workdays/open": {
       "post": {
         "tags": [
-          "op: workdays"
+          "admin: workdays"
         ],
         "summary": "Open Workday",
         "description": "Opens today's workday, or reopens it (200) if it was closed earlier today.",
-        "operationId": "open_workday_api_op_workdays_open_post",
+        "operationId": "open_workday_api_admin_workdays_open_post",
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -152,13 +152,13 @@
         }
       }
     },
-    "/api/op/workdays/current/close": {
+    "/api/admin/workdays/current/close": {
       "post": {
         "tags": [
-          "op: workdays"
+          "admin: workdays"
         ],
         "summary": "Close Workday",
-        "operationId": "close_workday_api_op_workdays_current_close_post",
+        "operationId": "close_workday_api_admin_workdays_current_close_post",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -173,14 +173,14 @@
         }
       }
     },
-    "/api/op/workdays/{workday_id}/sales": {
+    "/api/admin/workdays/{workday_id}/sales": {
       "get": {
         "tags": [
-          "op: workdays"
+          "admin: workdays"
         ],
         "summary": "Workday Sales",
         "description": "Every sale of the workday, newest first, with lines and customer.",
-        "operationId": "workday_sales_api_op_workdays__workday_id__sales_get",
+        "operationId": "workday_sales_api_admin_workdays__workday_id__sales_get",
         "parameters": [
           {
             "name": "workday_id",
@@ -245,14 +245,14 @@
         }
       }
     },
-    "/api/op/products": {
+    "/api/admin/products": {
       "get": {
         "tags": [
-          "op: products"
+          "admin: products"
         ],
         "summary": "List Products",
         "description": "Active products of the business, by sort_order, with their options (11.4).",
-        "operationId": "list_products_api_op_products_get",
+        "operationId": "list_products_api_admin_products_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -263,7 +263,7 @@
                     "$ref": "#/components/schemas/ProductOut"
                   },
                   "type": "array",
-                  "title": "Response List Products Api Op Products Get"
+                  "title": "Response List Products Api Admin Products Get"
                 }
               }
             }
@@ -271,13 +271,13 @@
         }
       }
     },
-    "/api/op/sales": {
+    "/api/admin/sales": {
       "post": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Create Sale",
-        "operationId": "create_sale_api_op_sales_post",
+        "operationId": "create_sale_api_admin_sales_post",
         "parameters": [
           {
             "name": "Idempotency-Key",
@@ -323,13 +323,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}": {
+    "/api/admin/sales/{sale_id}": {
       "get": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Get Sale",
-        "operationId": "get_sale_api_op_sales__sale_id__get",
+        "operationId": "get_sale_api_admin_sales__sale_id__get",
         "parameters": [
           {
             "name": "sale_id",
@@ -366,13 +366,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}/status": {
+    "/api/admin/sales/{sale_id}/status": {
       "get": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Sale Status",
-        "operationId": "sale_status_api_op_sales__sale_id__status_get",
+        "operationId": "sale_status_api_admin_sales__sale_id__status_get",
         "parameters": [
           {
             "name": "sale_id",
@@ -409,13 +409,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}/link": {
+    "/api/admin/sales/{sale_id}/link": {
       "post": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Link",
-        "operationId": "link_api_op_sales__sale_id__link_post",
+        "operationId": "link_api_admin_sales__sale_id__link_post",
         "parameters": [
           {
             "name": "sale_id",
@@ -462,13 +462,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}/unlink": {
+    "/api/admin/sales/{sale_id}/unlink": {
       "post": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Unlink",
-        "operationId": "unlink_api_op_sales__sale_id__unlink_post",
+        "operationId": "unlink_api_admin_sales__sale_id__unlink_post",
         "parameters": [
           {
             "name": "sale_id",
@@ -505,13 +505,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}/void": {
+    "/api/admin/sales/{sale_id}/void": {
       "post": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Void",
-        "operationId": "void_api_op_sales__sale_id__void_post",
+        "operationId": "void_api_admin_sales__sale_id__void_post",
         "parameters": [
           {
             "name": "sale_id",
@@ -558,13 +558,13 @@
         }
       }
     },
-    "/api/op/sales/{sale_id}/redeem-prize": {
+    "/api/admin/sales/{sale_id}/redeem-prize": {
       "post": {
         "tags": [
-          "op: sales"
+          "admin: sales"
         ],
         "summary": "Redeem Prize",
-        "operationId": "redeem_prize_api_op_sales__sale_id__redeem_prize_post",
+        "operationId": "redeem_prize_api_admin_sales__sale_id__redeem_prize_post",
         "parameters": [
           {
             "name": "sale_id",
@@ -611,13 +611,13 @@
         }
       }
     },
-    "/api/op/customers/search": {
+    "/api/admin/customers/search": {
       "get": {
         "tags": [
-          "op: customers"
+          "admin: customers"
         ],
         "summary": "Search",
-        "operationId": "search_api_op_customers_search_get",
+        "operationId": "search_api_admin_customers_search_get",
         "parameters": [
           {
             "name": "last4",
@@ -640,7 +640,7 @@
                   "items": {
                     "$ref": "#/components/schemas/CustomerSearchOut"
                   },
-                  "title": "Response Search Api Op Customers Search Get"
+                  "title": "Response Search Api Admin Customers Search Get"
                 }
               }
             }
@@ -658,13 +658,13 @@
         }
       }
     },
-    "/api/op/customers/{customer_id}": {
+    "/api/admin/customers/{customer_id}": {
       "get": {
         "tags": [
-          "op: customers"
+          "admin: customers"
         ],
         "summary": "Detail",
-        "operationId": "detail_api_op_customers__customer_id__get",
+        "operationId": "detail_api_admin_customers__customer_id__get",
         "parameters": [
           {
             "name": "customer_id",
@@ -701,13 +701,13 @@
         }
       }
     },
-    "/api/op/prizes/pending": {
+    "/api/admin/prizes/pending": {
       "get": {
         "tags": [
-          "op: prizes"
+          "admin: prizes"
         ],
         "summary": "Pending",
-        "operationId": "pending_api_op_prizes_pending_get",
+        "operationId": "pending_api_admin_prizes_pending_get",
         "parameters": [
           {
             "name": "filter",
@@ -735,7 +735,7 @@
                   "items": {
                     "$ref": "#/components/schemas/PendingPrizeOut"
                   },
-                  "title": "Response Pending Api Op Prizes Pending Get"
+                  "title": "Response Pending Api Admin Prizes Pending Get"
                 }
               }
             }
@@ -753,13 +753,13 @@
         }
       }
     },
-    "/api/op/prizes/catalog": {
+    "/api/admin/prizes/catalog": {
       "get": {
         "tags": [
-          "op: prizes"
+          "admin: prizes"
         ],
         "summary": "Catalog",
-        "operationId": "catalog_api_op_prizes_catalog_get",
+        "operationId": "catalog_api_admin_prizes_catalog_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -770,7 +770,51 @@
                     "$ref": "#/components/schemas/CatalogPrizeOut"
                   },
                   "type": "array",
-                  "title": "Response Catalog Api Op Prizes Catalog Get"
+                  "title": "Response Catalog Api Admin Prizes Catalog Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "admin: prizes"
+        ],
+        "summary": "Save Catalog",
+        "description": "Wheel editor: every prize in display order; active weights add up to 100%.",
+        "operationId": "save_catalog_api_admin_prizes_catalog_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WheelIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogPrizeOut"
+                  },
+                  "type": "array",
+                  "title": "Response Save Catalog Api Admin Prizes Catalog Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -778,13 +822,13 @@
         }
       }
     },
-    "/api/op/stats/workdays/{workday_id}": {
+    "/api/admin/stats/workdays/{workday_id}": {
       "get": {
         "tags": [
-          "op: stats"
+          "admin: stats"
         ],
         "summary": "Workday Stats",
-        "operationId": "workday_stats_api_op_stats_workdays__workday_id__get",
+        "operationId": "workday_stats_api_admin_stats_workdays__workday_id__get",
         "parameters": [
           {
             "name": "workday_id",
@@ -821,13 +865,13 @@
         }
       }
     },
-    "/api/op/stats/history": {
+    "/api/admin/stats/history": {
       "get": {
         "tags": [
-          "op: stats"
+          "admin: stats"
         ],
         "summary": "History",
-        "operationId": "history_api_op_stats_history_get",
+        "operationId": "history_api_admin_stats_history_get",
         "parameters": [
           {
             "name": "from",
@@ -874,13 +918,13 @@
         }
       }
     },
-    "/api/op/export/sales.csv": {
+    "/api/admin/export/sales.csv": {
       "get": {
         "tags": [
-          "op: stats"
+          "admin: stats"
         ],
         "summary": "Export Sales",
-        "operationId": "export_sales_api_op_export_sales_csv_get",
+        "operationId": "export_sales_api_admin_export_sales_csv_get",
         "parameters": [
           {
             "name": "from",
@@ -920,13 +964,13 @@
         }
       }
     },
-    "/api/op/events": {
+    "/api/admin/events": {
       "post": {
         "tags": [
-          "op: events"
+          "admin: events"
         ],
         "summary": "Post Event",
-        "operationId": "post_event_api_op_events_post",
+        "operationId": "post_event_api_admin_events_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -954,13 +998,13 @@
         }
       }
     },
-    "/api/c/business": {
+    "/api/client/business": {
       "get": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Business",
-        "operationId": "business_api_c_business_get",
+        "operationId": "business_api_client_business_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -975,13 +1019,13 @@
         }
       }
     },
-    "/api/c/claims/{token}": {
+    "/api/client/claims/{token}": {
       "get": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Claim Preview",
-        "operationId": "claim_preview_api_c_claims__token__get",
+        "operationId": "claim_preview_api_client_claims__token__get",
         "parameters": [
           {
             "name": "token",
@@ -1017,13 +1061,13 @@
         }
       }
     },
-    "/api/c/register": {
+    "/api/client/register": {
       "post": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Register",
-        "operationId": "register_api_c_register_post",
+        "operationId": "register_api_client_register_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1058,13 +1102,13 @@
         }
       }
     },
-    "/api/c/identify/confirm": {
+    "/api/client/identify/confirm": {
       "post": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Identify Confirm",
-        "operationId": "identify_confirm_api_c_identify_confirm_post",
+        "operationId": "identify_confirm_api_client_identify_confirm_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1099,13 +1143,13 @@
         }
       }
     },
-    "/api/c/me": {
+    "/api/client/me": {
       "get": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Me",
-        "operationId": "me_api_c_me_get",
+        "operationId": "me_api_client_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1120,13 +1164,13 @@
         }
       }
     },
-    "/api/c/claim": {
+    "/api/client/claim": {
       "post": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Claim",
-        "operationId": "claim_api_c_claim_post",
+        "operationId": "claim_api_client_claim_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1161,13 +1205,13 @@
         }
       }
     },
-    "/api/c/history": {
+    "/api/client/history": {
       "get": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "History",
-        "operationId": "history_api_c_history_get",
+        "operationId": "history_api_client_history_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1178,7 +1222,7 @@
                     "$ref": "#/components/schemas/HistorySale"
                   },
                   "type": "array",
-                  "title": "Response History Api C History Get"
+                  "title": "Response History Api Client History Get"
                 }
               }
             }
@@ -1186,13 +1230,13 @@
         }
       }
     },
-    "/api/c/logout": {
+    "/api/client/logout": {
       "post": {
         "tags": [
-          "c: identity"
+          "client: identity"
         ],
         "summary": "Logout",
-        "operationId": "logout_api_c_logout_post",
+        "operationId": "logout_api_client_logout_post",
         "responses": {
           "204": {
             "description": "Successful Response"
@@ -1200,14 +1244,14 @@
         }
       }
     },
-    "/api/c/wheel": {
+    "/api/client/wheel": {
       "get": {
         "tags": [
-          "c: wheel"
+          "client: wheel"
         ],
         "summary": "Wheel",
         "description": "Active segments in sort_order, WITHOUT weights (R12).",
-        "operationId": "wheel_api_c_wheel_get",
+        "operationId": "wheel_api_client_wheel_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1222,13 +1266,13 @@
         }
       }
     },
-    "/api/c/spins/{spin_id}/spin": {
+    "/api/client/spins/{spin_id}/spin": {
       "post": {
         "tags": [
-          "c: wheel"
+          "client: wheel"
         ],
         "summary": "Spin",
-        "operationId": "spin_api_c_spins__spin_id__spin_post",
+        "operationId": "spin_api_client_spins__spin_id__spin_post",
         "parameters": [
           {
             "name": "spin_id",
@@ -1265,13 +1309,13 @@
         }
       }
     },
-    "/api/c/prizes/{prize_award_id}": {
+    "/api/client/prizes/{prize_award_id}": {
       "get": {
         "tags": [
-          "c: wheel"
+          "client: wheel"
         ],
         "summary": "Prize Detail",
-        "operationId": "prize_detail_api_c_prizes__prize_award_id__get",
+        "operationId": "prize_detail_api_client_prizes__prize_award_id__get",
         "parameters": [
           {
             "name": "prize_award_id",
@@ -1308,13 +1352,13 @@
         }
       }
     },
-    "/api/c/events": {
+    "/api/client/events": {
       "post": {
         "tags": [
-          "c: events"
+          "client: events"
         ],
         "summary": "Post Event",
-        "operationId": "post_event_api_c_events_post",
+        "operationId": "post_event_api_client_events_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1534,6 +1578,18 @@
             ],
             "title": "Max Value Cop"
           },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
+          },
           "weight": {
             "type": "integer",
             "title": "Weight"
@@ -1560,6 +1616,10 @@
           "active": {
             "type": "boolean",
             "title": "Active"
+          },
+          "awarded": {
+            "type": "boolean",
+            "title": "Awarded"
           }
         },
         "type": "object",
@@ -1570,11 +1630,13 @@
           "type",
           "value",
           "max_value_cop",
+          "category_id",
           "weight",
           "expires_days",
           "color",
           "sort_order",
-          "active"
+          "active",
+          "awarded"
         ],
         "title": "CatalogPrizeOut",
         "description": "Owner only: includes weights."
@@ -2107,6 +2169,18 @@
               }
             ],
             "title": "Max Value Cop"
+          },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
           }
         },
         "type": "object",
@@ -2118,7 +2192,8 @@
           "awarded_at",
           "expires_at",
           "value",
-          "max_value_cop"
+          "max_value_cop",
+          "category_id"
         ],
         "title": "OpCustomerPrizeOut",
         "description": "Active prize as seen by the operator: includes the catalog value so the\nsale screen can show an estimated discount (the sale still computes it)."
@@ -2500,6 +2575,18 @@
             ],
             "title": "Category"
           },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
+          },
           "prize_eligible": {
             "type": "boolean",
             "title": "Prize Eligible"
@@ -2520,6 +2607,7 @@
           "photo_url",
           "description",
           "category",
+          "category_id",
           "prize_eligible",
           "option_groups"
         ],
@@ -3173,6 +3261,25 @@
         ],
         "title": "VoidIn"
       },
+      "WheelIn": {
+        "properties": {
+          "prizes": {
+            "items": {
+              "$ref": "#/components/schemas/WheelPrizeIn"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Prizes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prizes"
+        ],
+        "title": "WheelIn",
+        "description": "The whole wheel, in display order. Every existing prize must be listed."
+      },
       "WheelOut": {
         "properties": {
           "segments": {
@@ -3188,6 +3295,113 @@
           "segments"
         ],
         "title": "WheelOut"
+      },
+      "WheelPrizeIn": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "short_label": {
+            "type": "string",
+            "maxLength": 14,
+            "minLength": 1,
+            "title": "Short Label"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "percent_off",
+              "free_item",
+              "extra_item"
+            ],
+            "title": "Type"
+          },
+          "value": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Value",
+            "default": 0
+          },
+          "max_value_cop": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Value Cop"
+          },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Id"
+          },
+          "weight": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Weight"
+          },
+          "expires_days": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Expires Days"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(primary|secondary|ink|#[0-9A-Fa-f]{6})$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "short_label",
+          "type",
+          "weight",
+          "expires_days",
+          "active"
+        ],
+        "title": "WheelPrizeIn",
+        "description": "One prize of the wheel editor. No id = a new prize."
       },
       "WheelSegment": {
         "properties": {

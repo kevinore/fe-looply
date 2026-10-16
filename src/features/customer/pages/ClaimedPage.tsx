@@ -27,7 +27,7 @@ export default function ClaimedPage() {
         </Screen>
       );
     }
-    if (me.isSuccess && me.data === null) return <Navigate to="/c" replace />;
+    if (me.isSuccess && me.data === null) return <Navigate to="/client" replace />;
     return (
       <Screen tone="soft">
         <LoadingState />
@@ -39,9 +39,9 @@ export default function ClaimedPage() {
     const firstPurchase = state !== null && counted && card.purchases === 1;
     if (firstPurchase && !isStandalone() && !installPromptSeen()) {
       markInstallPromptSeen();
-      navigate('/c/install', { replace: true });
+      navigate('/client/install', { replace: true });
     } else {
-      navigate('/c', { replace: true });
+      navigate('/client', { replace: true });
     }
   };
 

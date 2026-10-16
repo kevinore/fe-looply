@@ -17,7 +17,7 @@ import {
   toast,
 } from '@/ui';
 import { closeWorkday, historyQuery, workdayStatsQuery } from '../api';
-import { OpMenuButton, OpNav } from '../OpNav';
+import { AdminMenuButton, AdminNav } from '../AdminNav';
 import { workdayQuery } from '../queries';
 import { useOpenWorkday } from '../useOpenWorkday';
 import { WorkdayBody, WorkdayHeader } from '../WorkdayReport';
@@ -34,23 +34,23 @@ export default function SummaryPage() {
 
   if (workday.isPending || (!workday.data && history.isPending))
     return (
-      <Screen footer={<OpNav />}>
+      <Screen footer={<AdminNav />}>
         <LoadingState />
       </Screen>
     );
   if (workday.isError)
     return (
-      <Screen footer={<OpNav />}>
+      <Screen footer={<AdminNav />}>
         <ErrorState error={workday.error} onRetry={() => void workday.refetch()} />
       </Screen>
     );
   if (!id)
     return (
-      <Screen footer={<OpNav />} className="justify-center gap-2">
+      <Screen footer={<AdminNav />} className="justify-center gap-2">
         <EmptyState icon="chart" title="No hay jornada hoy.">
           Abre la jornada para empezar a vender.
         </EmptyState>
-        <ButtonLink to="/op" variant="success">
+        <ButtonLink to="/admin" variant="success">
           Ir a abrir jornada
         </ButtonLink>
         <AllWorkdaysLink />
@@ -62,7 +62,7 @@ export default function SummaryPage() {
 function AllWorkdaysLink() {
   return (
     <Link
-      to="/op/history"
+      to="/admin/history"
       className="flex min-h-12 items-center justify-center gap-1 rounded-2xl text-sm font-semibold text-brand-ink active:bg-brand-field"
     >
       <Icon name="history" size={18} /> Ver todas las jornadas
@@ -81,7 +81,7 @@ function Summary({ id, open }: { id: string; open: boolean }) {
       setConfirm(false);
       qc.setQueryData(keys.workday, null);
       void qc.invalidateQueries({ queryKey: keys.workdayStats(id) });
-      void qc.invalidateQueries({ queryKey: ['op', 'stats', 'history'] });
+      void qc.invalidateQueries({ queryKey: ['admin', 'stats', 'history'] });
       toast.success('Jornada cerrada');
     },
     onError: (e) => toast.error(errorMessage(e)),
@@ -89,13 +89,13 @@ function Summary({ id, open }: { id: string; open: boolean }) {
 
   if (stats.isPending)
     return (
-      <Screen footer={<OpNav />}>
+      <Screen footer={<AdminNav />}>
         <LoadingState />
       </Screen>
     );
   if (stats.isError)
     return (
-      <Screen footer={<OpNav />}>
+      <Screen footer={<AdminNav />}>
         <ErrorState error={stats.error} onRetry={() => void stats.refetch()} />
       </Screen>
     );
@@ -116,11 +116,11 @@ function Summary({ id, open }: { id: string; open: boolean }) {
               Reabrir jornada
             </Button>
           )}
-          <OpNav />
+          <AdminNav />
         </div>
       }
     >
-      <WorkdayHeader stats={stats.data} right={<OpMenuButton />} />
+      <WorkdayHeader stats={stats.data} right={<AdminMenuButton />} />
       <WorkdayBody stats={stats.data} workdayId={id}>
         <AllWorkdaysLink />
       </WorkdayBody>

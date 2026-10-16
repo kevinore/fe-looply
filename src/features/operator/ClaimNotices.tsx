@@ -48,7 +48,7 @@ function NoticeCard({ notice }: { notice: ClaimNotice }) {
 
   const open = () => {
     dismiss(notice.id);
-    navigate(`/op/sale/${notice.saleId}`);
+    navigate(`/admin/sale/${notice.saleId}`);
   };
 
   return (

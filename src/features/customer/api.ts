@@ -6,18 +6,18 @@ import type { ClaimPreview, ClaimResult } from '@/api/types';
 import { keys } from '@/app/keys';
 
 export const claimApi = {
-  preview: (token: string) => unwrap(api.GET('/api/c/claims/{token}', { params: { path: { token } } })),
-  claim: (claim_token: string) => unwrap(api.POST('/api/c/claim', { body: { claim_token } })),
+  preview: (token: string) => unwrap(api.GET('/api/client/claims/{token}', { params: { path: { token } } })),
+  claim: (claim_token: string) => unwrap(api.POST('/api/client/claim', { body: { claim_token } })),
   register: (body: { phone: string; alias: string; consent: boolean; claim_token: string }) =>
-    unwrap(api.POST('/api/c/register', { body })),
+    unwrap(api.POST('/api/client/register', { body })),
   confirm: (body: { phone: string; claim_token: string }) =>
-    unwrap(api.POST('/api/c/identify/confirm', { body })),
-  wheel: () => unwrap(api.GET('/api/c/wheel')),
+    unwrap(api.POST('/api/client/identify/confirm', { body })),
+  wheel: () => unwrap(api.GET('/api/client/wheel')),
   spin: (spinId: string) =>
-    unwrap(api.POST('/api/c/spins/{spin_id}/spin', { params: { path: { spin_id: spinId } } })),
+    unwrap(api.POST('/api/client/spins/{spin_id}/spin', { params: { path: { spin_id: spinId } } })),
   prize: (id: string) =>
-    unwrap(api.GET('/api/c/prizes/{prize_award_id}', { params: { path: { prize_award_id: id } } })),
-  history: () => unwrap(api.GET('/api/c/history')),
+    unwrap(api.GET('/api/client/prizes/{prize_award_id}', { params: { path: { prize_award_id: id } } })),
+  history: () => unwrap(api.GET('/api/client/history')),
 };
 
 export type PreviewSale = NonNullable<ClaimPreview['sale']>;
@@ -34,8 +34,8 @@ export function useClaimResultNavigation() {
       qc.setQueryData(keys.me, result.card);
       const state: ClaimedState = { result, sale };
       const first = result.new_spins[0];
-      if (first) navigate(`/c/spin/${first.id}`, { replace: true, state });
-      else navigate('/c/claimed', { replace: true, state });
+      if (first) navigate(`/client/spin/${first.id}`, { replace: true, state });
+      else navigate('/client/claimed', { replace: true, state });
     },
     [navigate, qc],
   );

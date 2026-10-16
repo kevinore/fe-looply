@@ -8,7 +8,7 @@ const BrandContext = createContext<BrandValue>({ branding: {}, name: '' });
 
 /**
  * Applies `branding` as CSS variables on :root. Each zone passes its own source:
- * the client zone uses GET /api/c/business, the operator zone /api/op/auth/me.
+ * the client zone uses GET /api/client/business, the operator zone /api/admin/auth/me.
  */
 export function BrandProvider({
   branding,

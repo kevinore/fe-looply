@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/auth/login": {
+    "/api/admin/auth/login": {
         parameters: {
             query?: never;
             header?: never;
@@ -31,14 +31,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Login */
-        post: operations["login_api_op_auth_login_post"];
+        post: operations["login_api_admin_auth_login_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/auth/logout": {
+    "/api/admin/auth/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -48,14 +48,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Logout */
-        post: operations["logout_api_op_auth_logout_post"];
+        post: operations["logout_api_admin_auth_logout_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/auth/me": {
+    "/api/admin/auth/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -63,7 +63,7 @@ export interface paths {
             cookie?: never;
         };
         /** Me */
-        get: operations["me_api_op_auth_me_get"];
+        get: operations["me_api_admin_auth_me_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -72,7 +72,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/workdays/current": {
+    "/api/admin/workdays/current": {
         parameters: {
             query?: never;
             header?: never;
@@ -80,7 +80,7 @@ export interface paths {
             cookie?: never;
         };
         /** Current */
-        get: operations["current_api_op_workdays_current_get"];
+        get: operations["current_api_admin_workdays_current_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -89,7 +89,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/workdays/open": {
+    "/api/admin/workdays/open": {
         parameters: {
             query?: never;
             header?: never;
@@ -102,14 +102,14 @@ export interface paths {
          * Open Workday
          * @description Opens today's workday, or reopens it (200) if it was closed earlier today.
          */
-        post: operations["open_workday_api_op_workdays_open_post"];
+        post: operations["open_workday_api_admin_workdays_open_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/workdays/current/close": {
+    "/api/admin/workdays/current/close": {
         parameters: {
             query?: never;
             header?: never;
@@ -119,14 +119,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Close Workday */
-        post: operations["close_workday_api_op_workdays_current_close_post"];
+        post: operations["close_workday_api_admin_workdays_current_close_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/workdays/{workday_id}/sales": {
+    "/api/admin/workdays/{workday_id}/sales": {
         parameters: {
             query?: never;
             header?: never;
@@ -137,7 +137,7 @@ export interface paths {
          * Workday Sales
          * @description Every sale of the workday, newest first, with lines and customer.
          */
-        get: operations["workday_sales_api_op_workdays__workday_id__sales_get"];
+        get: operations["workday_sales_api_admin_workdays__workday_id__sales_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -146,7 +146,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/products": {
+    "/api/admin/products": {
         parameters: {
             query?: never;
             header?: never;
@@ -157,7 +157,7 @@ export interface paths {
          * List Products
          * @description Active products of the business, by sort_order, with their options (11.4).
          */
-        get: operations["list_products_api_op_products_get"];
+        get: operations["list_products_api_admin_products_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -166,7 +166,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales": {
+    "/api/admin/sales": {
         parameters: {
             query?: never;
             header?: never;
@@ -176,14 +176,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Create Sale */
-        post: operations["create_sale_api_op_sales_post"];
+        post: operations["create_sale_api_admin_sales_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}": {
+    "/api/admin/sales/{sale_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -191,7 +191,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Sale */
-        get: operations["get_sale_api_op_sales__sale_id__get"];
+        get: operations["get_sale_api_admin_sales__sale_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -200,7 +200,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}/status": {
+    "/api/admin/sales/{sale_id}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -208,7 +208,7 @@ export interface paths {
             cookie?: never;
         };
         /** Sale Status */
-        get: operations["sale_status_api_op_sales__sale_id__status_get"];
+        get: operations["sale_status_api_admin_sales__sale_id__status_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -217,7 +217,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}/link": {
+    "/api/admin/sales/{sale_id}/link": {
         parameters: {
             query?: never;
             header?: never;
@@ -227,14 +227,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Link */
-        post: operations["link_api_op_sales__sale_id__link_post"];
+        post: operations["link_api_admin_sales__sale_id__link_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}/unlink": {
+    "/api/admin/sales/{sale_id}/unlink": {
         parameters: {
             query?: never;
             header?: never;
@@ -244,14 +244,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Unlink */
-        post: operations["unlink_api_op_sales__sale_id__unlink_post"];
+        post: operations["unlink_api_admin_sales__sale_id__unlink_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}/void": {
+    "/api/admin/sales/{sale_id}/void": {
         parameters: {
             query?: never;
             header?: never;
@@ -261,14 +261,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Void */
-        post: operations["void_api_op_sales__sale_id__void_post"];
+        post: operations["void_api_admin_sales__sale_id__void_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/sales/{sale_id}/redeem-prize": {
+    "/api/admin/sales/{sale_id}/redeem-prize": {
         parameters: {
             query?: never;
             header?: never;
@@ -278,14 +278,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Redeem Prize */
-        post: operations["redeem_prize_api_op_sales__sale_id__redeem_prize_post"];
+        post: operations["redeem_prize_api_admin_sales__sale_id__redeem_prize_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/op/customers/search": {
+    "/api/admin/customers/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -293,7 +293,7 @@ export interface paths {
             cookie?: never;
         };
         /** Search */
-        get: operations["search_api_op_customers_search_get"];
+        get: operations["search_api_admin_customers_search_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -302,7 +302,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/customers/{customer_id}": {
+    "/api/admin/customers/{customer_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -310,7 +310,7 @@ export interface paths {
             cookie?: never;
         };
         /** Detail */
-        get: operations["detail_api_op_customers__customer_id__get"];
+        get: operations["detail_api_admin_customers__customer_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -319,7 +319,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/prizes/pending": {
+    "/api/admin/prizes/pending": {
         parameters: {
             query?: never;
             header?: never;
@@ -327,7 +327,7 @@ export interface paths {
             cookie?: never;
         };
         /** Pending */
-        get: operations["pending_api_op_prizes_pending_get"];
+        get: operations["pending_api_admin_prizes_pending_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -336,7 +336,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/prizes/catalog": {
+    "/api/admin/prizes/catalog": {
         parameters: {
             query?: never;
             header?: never;
@@ -344,8 +344,12 @@ export interface paths {
             cookie?: never;
         };
         /** Catalog */
-        get: operations["catalog_api_op_prizes_catalog_get"];
-        put?: never;
+        get: operations["catalog_api_admin_prizes_catalog_get"];
+        /**
+         * Save Catalog
+         * @description Wheel editor: every prize in display order; active weights add up to 100%.
+         */
+        put: operations["save_catalog_api_admin_prizes_catalog_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -353,7 +357,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/stats/workdays/{workday_id}": {
+    "/api/admin/stats/workdays/{workday_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -361,7 +365,7 @@ export interface paths {
             cookie?: never;
         };
         /** Workday Stats */
-        get: operations["workday_stats_api_op_stats_workdays__workday_id__get"];
+        get: operations["workday_stats_api_admin_stats_workdays__workday_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -370,7 +374,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/stats/history": {
+    "/api/admin/stats/history": {
         parameters: {
             query?: never;
             header?: never;
@@ -378,7 +382,7 @@ export interface paths {
             cookie?: never;
         };
         /** History */
-        get: operations["history_api_op_stats_history_get"];
+        get: operations["history_api_admin_stats_history_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -387,7 +391,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/export/sales.csv": {
+    "/api/admin/export/sales.csv": {
         parameters: {
             query?: never;
             header?: never;
@@ -395,7 +399,7 @@ export interface paths {
             cookie?: never;
         };
         /** Export Sales */
-        get: operations["export_sales_api_op_export_sales_csv_get"];
+        get: operations["export_sales_api_admin_export_sales_csv_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -404,7 +408,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/op/events": {
+    "/api/admin/events": {
         parameters: {
             query?: never;
             header?: never;
@@ -414,14 +418,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Post Event */
-        post: operations["post_event_api_op_events_post"];
+        post: operations["post_event_api_admin_events_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/business": {
+    "/api/client/business": {
         parameters: {
             query?: never;
             header?: never;
@@ -429,7 +433,7 @@ export interface paths {
             cookie?: never;
         };
         /** Business */
-        get: operations["business_api_c_business_get"];
+        get: operations["business_api_client_business_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -438,7 +442,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/claims/{token}": {
+    "/api/client/claims/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -446,7 +450,7 @@ export interface paths {
             cookie?: never;
         };
         /** Claim Preview */
-        get: operations["claim_preview_api_c_claims__token__get"];
+        get: operations["claim_preview_api_client_claims__token__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -455,7 +459,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/register": {
+    "/api/client/register": {
         parameters: {
             query?: never;
             header?: never;
@@ -465,14 +469,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Register */
-        post: operations["register_api_c_register_post"];
+        post: operations["register_api_client_register_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/identify/confirm": {
+    "/api/client/identify/confirm": {
         parameters: {
             query?: never;
             header?: never;
@@ -482,14 +486,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Identify Confirm */
-        post: operations["identify_confirm_api_c_identify_confirm_post"];
+        post: operations["identify_confirm_api_client_identify_confirm_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/me": {
+    "/api/client/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -497,7 +501,7 @@ export interface paths {
             cookie?: never;
         };
         /** Me */
-        get: operations["me_api_c_me_get"];
+        get: operations["me_api_client_me_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -506,7 +510,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/claim": {
+    "/api/client/claim": {
         parameters: {
             query?: never;
             header?: never;
@@ -516,14 +520,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Claim */
-        post: operations["claim_api_c_claim_post"];
+        post: operations["claim_api_client_claim_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/history": {
+    "/api/client/history": {
         parameters: {
             query?: never;
             header?: never;
@@ -531,7 +535,7 @@ export interface paths {
             cookie?: never;
         };
         /** History */
-        get: operations["history_api_c_history_get"];
+        get: operations["history_api_client_history_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -540,7 +544,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/logout": {
+    "/api/client/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -550,14 +554,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Logout */
-        post: operations["logout_api_c_logout_post"];
+        post: operations["logout_api_client_logout_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/wheel": {
+    "/api/client/wheel": {
         parameters: {
             query?: never;
             header?: never;
@@ -568,7 +572,7 @@ export interface paths {
          * Wheel
          * @description Active segments in sort_order, WITHOUT weights (R12).
          */
-        get: operations["wheel_api_c_wheel_get"];
+        get: operations["wheel_api_client_wheel_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -577,7 +581,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/spins/{spin_id}/spin": {
+    "/api/client/spins/{spin_id}/spin": {
         parameters: {
             query?: never;
             header?: never;
@@ -587,14 +591,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Spin */
-        post: operations["spin_api_c_spins__spin_id__spin_post"];
+        post: operations["spin_api_client_spins__spin_id__spin_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/c/prizes/{prize_award_id}": {
+    "/api/client/prizes/{prize_award_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -602,7 +606,7 @@ export interface paths {
             cookie?: never;
         };
         /** Prize Detail */
-        get: operations["prize_detail_api_c_prizes__prize_award_id__get"];
+        get: operations["prize_detail_api_client_prizes__prize_award_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -611,7 +615,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/c/events": {
+    "/api/client/events": {
         parameters: {
             query?: never;
             header?: never;
@@ -621,7 +625,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Post Event */
-        post: operations["post_event_api_c_events_post"];
+        post: operations["post_event_api_client_events_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -731,6 +735,8 @@ export interface components {
             value: number;
             /** Max Value Cop */
             max_value_cop: number | null;
+            /** Category Id */
+            category_id: string | null;
             /** Weight */
             weight: number;
             /** Expires Days */
@@ -741,6 +747,8 @@ export interface components {
             sort_order: number;
             /** Active */
             active: boolean;
+            /** Awarded */
+            awarded: boolean;
         };
         /** ClaimIn */
         ClaimIn: {
@@ -956,6 +964,8 @@ export interface components {
             value: number;
             /** Max Value Cop */
             max_value_cop: number | null;
+            /** Category Id */
+            category_id: string | null;
         };
         /** OperatorBusinessOut */
         OperatorBusinessOut: {
@@ -1138,6 +1148,8 @@ export interface components {
             description: string | null;
             /** Category */
             category: string | null;
+            /** Category Id */
+            category_id: string | null;
             /** Prize Eligible */
             prize_eligible: boolean;
             /** Option Groups */
@@ -1371,10 +1383,52 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /**
+         * WheelIn
+         * @description The whole wheel, in display order. Every existing prize must be listed.
+         */
+        WheelIn: {
+            /** Prizes */
+            prizes: components["schemas"]["WheelPrizeIn"][];
+        };
         /** WheelOut */
         WheelOut: {
             /** Segments */
             segments: components["schemas"]["WheelSegment"][];
+        };
+        /**
+         * WheelPrizeIn
+         * @description One prize of the wheel editor. No id = a new prize.
+         */
+        WheelPrizeIn: {
+            /** Id */
+            id?: string | null;
+            /** Name */
+            name: string;
+            /** Short Label */
+            short_label: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "percent_off" | "free_item" | "extra_item";
+            /**
+             * Value
+             * @default 0
+             */
+            value: number;
+            /** Max Value Cop */
+            max_value_cop?: number | null;
+            /** Category Id */
+            category_id?: string | null;
+            /** Weight */
+            weight: number;
+            /** Expires Days */
+            expires_days: number;
+            /** Color */
+            color?: string | null;
+            /** Active */
+            active: boolean;
         };
         /** WheelSegment */
         WheelSegment: {
@@ -1615,7 +1669,7 @@ export interface operations {
             };
         };
     };
-    login_api_op_auth_login_post: {
+    login_api_admin_auth_login_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1648,7 +1702,7 @@ export interface operations {
             };
         };
     };
-    logout_api_op_auth_logout_post: {
+    logout_api_admin_auth_logout_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1666,7 +1720,7 @@ export interface operations {
             };
         };
     };
-    me_api_op_auth_me_get: {
+    me_api_admin_auth_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1686,7 +1740,7 @@ export interface operations {
             };
         };
     };
-    current_api_op_workdays_current_get: {
+    current_api_admin_workdays_current_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1706,7 +1760,7 @@ export interface operations {
             };
         };
     };
-    open_workday_api_op_workdays_open_post: {
+    open_workday_api_admin_workdays_open_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1726,7 +1780,7 @@ export interface operations {
             };
         };
     };
-    close_workday_api_op_workdays_current_close_post: {
+    close_workday_api_admin_workdays_current_close_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1746,7 +1800,7 @@ export interface operations {
             };
         };
     };
-    workday_sales_api_op_workdays__workday_id__sales_get: {
+    workday_sales_api_admin_workdays__workday_id__sales_get: {
         parameters: {
             query?: {
                 limit?: number;
@@ -1780,7 +1834,7 @@ export interface operations {
             };
         };
     };
-    list_products_api_op_products_get: {
+    list_products_api_admin_products_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1800,7 +1854,7 @@ export interface operations {
             };
         };
     };
-    create_sale_api_op_sales_post: {
+    create_sale_api_admin_sales_post: {
         parameters: {
             query?: never;
             header: {
@@ -1835,7 +1889,7 @@ export interface operations {
             };
         };
     };
-    get_sale_api_op_sales__sale_id__get: {
+    get_sale_api_admin_sales__sale_id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1866,7 +1920,7 @@ export interface operations {
             };
         };
     };
-    sale_status_api_op_sales__sale_id__status_get: {
+    sale_status_api_admin_sales__sale_id__status_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1897,7 +1951,7 @@ export interface operations {
             };
         };
     };
-    link_api_op_sales__sale_id__link_post: {
+    link_api_admin_sales__sale_id__link_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1932,7 +1986,7 @@ export interface operations {
             };
         };
     };
-    unlink_api_op_sales__sale_id__unlink_post: {
+    unlink_api_admin_sales__sale_id__unlink_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1963,7 +2017,7 @@ export interface operations {
             };
         };
     };
-    void_api_op_sales__sale_id__void_post: {
+    void_api_admin_sales__sale_id__void_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1998,7 +2052,7 @@ export interface operations {
             };
         };
     };
-    redeem_prize_api_op_sales__sale_id__redeem_prize_post: {
+    redeem_prize_api_admin_sales__sale_id__redeem_prize_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2033,7 +2087,7 @@ export interface operations {
             };
         };
     };
-    search_api_op_customers_search_get: {
+    search_api_admin_customers_search_get: {
         parameters: {
             query: {
                 last4: string;
@@ -2064,7 +2118,7 @@ export interface operations {
             };
         };
     };
-    detail_api_op_customers__customer_id__get: {
+    detail_api_admin_customers__customer_id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2095,7 +2149,7 @@ export interface operations {
             };
         };
     };
-    pending_api_op_prizes_pending_get: {
+    pending_api_admin_prizes_pending_get: {
         parameters: {
             query?: {
                 filter?: "expiring" | "free" | "all";
@@ -2126,7 +2180,7 @@ export interface operations {
             };
         };
     };
-    catalog_api_op_prizes_catalog_get: {
+    catalog_api_admin_prizes_catalog_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2146,7 +2200,40 @@ export interface operations {
             };
         };
     };
-    workday_stats_api_op_stats_workdays__workday_id__get: {
+    save_catalog_api_admin_prizes_catalog_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WheelIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogPrizeOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    workday_stats_api_admin_stats_workdays__workday_id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2177,7 +2264,7 @@ export interface operations {
             };
         };
     };
-    history_api_op_stats_history_get: {
+    history_api_admin_stats_history_get: {
         parameters: {
             query: {
                 from: string;
@@ -2209,7 +2296,7 @@ export interface operations {
             };
         };
     };
-    export_sales_api_op_export_sales_csv_get: {
+    export_sales_api_admin_export_sales_csv_get: {
         parameters: {
             query: {
                 from: string;
@@ -2239,7 +2326,7 @@ export interface operations {
             };
         };
     };
-    post_event_api_op_events_post: {
+    post_event_api_admin_events_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2270,7 +2357,7 @@ export interface operations {
             };
         };
     };
-    business_api_c_business_get: {
+    business_api_client_business_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2290,7 +2377,7 @@ export interface operations {
             };
         };
     };
-    claim_preview_api_c_claims__token__get: {
+    claim_preview_api_client_claims__token__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2321,7 +2408,7 @@ export interface operations {
             };
         };
     };
-    register_api_c_register_post: {
+    register_api_client_register_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2354,7 +2441,7 @@ export interface operations {
             };
         };
     };
-    identify_confirm_api_c_identify_confirm_post: {
+    identify_confirm_api_client_identify_confirm_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2387,7 +2474,7 @@ export interface operations {
             };
         };
     };
-    me_api_c_me_get: {
+    me_api_client_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2407,7 +2494,7 @@ export interface operations {
             };
         };
     };
-    claim_api_c_claim_post: {
+    claim_api_client_claim_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2440,7 +2527,7 @@ export interface operations {
             };
         };
     };
-    history_api_c_history_get: {
+    history_api_client_history_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2460,7 +2547,7 @@ export interface operations {
             };
         };
     };
-    logout_api_c_logout_post: {
+    logout_api_client_logout_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2478,7 +2565,7 @@ export interface operations {
             };
         };
     };
-    wheel_api_c_wheel_get: {
+    wheel_api_client_wheel_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2498,7 +2585,7 @@ export interface operations {
             };
         };
     };
-    spin_api_c_spins__spin_id__spin_post: {
+    spin_api_client_spins__spin_id__spin_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2529,7 +2616,7 @@ export interface operations {
             };
         };
     };
-    prize_detail_api_c_prizes__prize_award_id__get: {
+    prize_detail_api_client_prizes__prize_award_id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2560,7 +2647,7 @@ export interface operations {
             };
         };
     };
-    post_event_api_c_events_post: {
+    post_event_api_client_events_post: {
         parameters: {
             query?: never;
             header?: never;

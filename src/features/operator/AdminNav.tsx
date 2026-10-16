@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { BottomNav, BottomSheet, Button, buttonClass, Icon, toast } from '@/ui';
@@ -7,25 +7,27 @@ import { useCart } from './cart';
 import { useClaimNotices } from './notifications';
 import { usePendingSales } from './pendingSales';
 import { logout } from './api';
+import { adminMeQuery } from './queries';
 
 const ITEMS = [
-  { to: '/op', label: 'Venta', icon: 'bag' as const, end: true },
-  { to: '/op/search', label: 'Buscar', icon: 'search' as const },
-  { to: '/op/prizes', label: 'Premios', icon: 'gift' as const },
-  { to: '/op/summary', label: 'Resumen', icon: 'chart' as const },
+  { to: '/admin', label: 'Venta', icon: 'bag' as const, end: true },
+  { to: '/admin/search', label: 'Buscar', icon: 'search' as const },
+  { to: '/admin/prizes', label: 'Premios', icon: 'gift' as const },
+  { to: '/admin/summary', label: 'Resumen', icon: 'chart' as const },
 ];
 
 /** Operator bottom bar (8.14): Venta · Buscar · Premios · Resumen. */
-export function OpNav({ className }: { className?: string }) {
+export function AdminNav({ className }: { className?: string }) {
   return <BottomNav items={ITEMS} className={className} />;
 }
 
-/** Header menu button with Jornadas and Cerrar sesión. */
-export function OpMenuButton() {
+/** Header menu button with Jornadas, Ruleta de premios (owner) and Cerrar sesión. */
+export function AdminMenuButton() {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const isOwner = useQuery(adminMeQuery).data?.operator.role === 'owner';
 
   const doLogout = async () => {
     setBusy(true);
@@ -34,8 +36,8 @@ export function OpMenuButton() {
       useCart.getState().reset();
       usePendingSales.setState({ items: {} });
       useClaimNotices.setState({ items: [] });
-      qc.removeQueries({ queryKey: ['op'] });
-      navigate('/op/login', { replace: true });
+      qc.removeQueries({ queryKey: ['admin'] });
+      navigate('/admin/login', { replace: true });
     } catch (e) {
       toast.error(errorMessage(e));
     } finally {
@@ -55,9 +57,14 @@ export function OpMenuButton() {
       </button>
       <BottomSheet open={open} onClose={() => setOpen(false)} title="Menú">
         <div className="grid gap-2">
-          <Link to="/op/history" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
+          <Link to="/admin/history" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
             <Icon name="history" size={20} /> Jornadas
           </Link>
+          {isOwner && (
+            <Link to="/admin/wheel" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
+              <Icon name="gift" size={20} /> Ruleta de premios
+            </Link>
+          )}
           <Button variant="ghost" loading={busy} onClick={doLogout}>
             <Icon name="logout" size={20} /> Cerrar sesión
           </Button>

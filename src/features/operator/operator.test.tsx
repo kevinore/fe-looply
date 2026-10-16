@@ -27,6 +27,7 @@ const PRODUCTS: Product[] = [
     photo_url: null,
     description: null,
     category: null,
+    category_id: null,
     prize_eligible: true,
     option_groups: [],
   },
@@ -37,6 +38,7 @@ const PRODUCTS: Product[] = [
     photo_url: null,
     description: null,
     category: null,
+    category_id: null,
     prize_eligible: true,
     option_groups: [],
   },
@@ -50,6 +52,7 @@ const LAYERED: Product = {
   photo_url: null,
   description: 'Frutos rojos',
   category: null,
+  category_id: null,
   prize_eligible: true,
   option_groups: [
     {
@@ -141,8 +144,8 @@ afterEach(() => {
 
 describe('02 · Venta (carrito)', () => {
   it('tap adds, long press removes, total is the catalog estimate, Cobrar disabled when empty', async () => {
-    mockApi({ 'GET /api/op/products': () => json(PRODUCTS) });
-    renderRoutes([{ path: '/op', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/op' });
+    mockApi({ 'GET /api/admin/products': () => json(PRODUCTS) });
+    renderRoutes([{ path: '/admin', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/admin' });
 
     const cobrar = await screen.findByRole('button', { name: 'Cobrar' });
     expect(cobrar).toBeDisabled();
@@ -171,8 +174,8 @@ describe('02 · Venta (carrito)', () => {
 
 describe('02 · Venta · opciones del producto', () => {
   it('a product with options opens the sheet; each combination is its own line', async () => {
-    mockApi({ 'GET /api/op/products': () => json([...PRODUCTS, LAYERED]) });
-    renderRoutes([{ path: '/op', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/op' });
+    mockApi({ 'GET /api/admin/products': () => json([...PRODUCTS, LAYERED]) });
+    renderRoutes([{ path: '/admin', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/admin' });
 
     const tile = await screen.findByRole('button', { name: /Berry Bliss/ });
     expect(screen.getByText('Frutos rojos')).toBeInTheDocument();
@@ -210,24 +213,24 @@ describe('02 · Venta · opciones del producto', () => {
   });
 
   it('checkout sends option_ids per line and lists them', async () => {
-    const api = mockApi({ 'POST /api/op/sales': () => json(sale(), 201) });
+    const api = mockApi({ 'POST /api/admin/sales': () => json(sale(), 201) });
     useCart.getState().add('p3', ['mat', 'ave']);
     useCart.getState().add('p3', ['ave', 'mat']); // same combination, any order
     useCart.getState().add('p1');
     renderRoutes(
       [
         {
-          path: '/op',
+          path: '/admin',
           element: <CheckoutSheet open onClose={() => {}} products={[...PRODUCTS, LAYERED]} />,
         },
-        { path: '/op/sale/:id/qr', element: <Where /> },
+        { path: '/admin/sale/:id/qr', element: <Where /> },
       ],
-      { pathname: '/op' },
+      { pathname: '/admin' },
     );
     expect(await screen.findByText('Avena · Matcha')).toBeInTheDocument();
     expect(screen.getByText('$44.000')).toBeInTheDocument(); // 2 × 15000 + 14000
     await userEvent.click(screen.getByRole('button', { name: 'Cobrar y mostrar QR' }));
-    await waitFor(() => expect(api.count('POST /api/op/sales')).toBe(1));
+    await waitFor(() => expect(api.count('POST /api/admin/sales')).toBe(1));
     const body = await api.calls[0]!.json();
     expect(body.items).toEqual([
       { product_id: 'p3', qty: 2, option_ids: ['mat', 'ave'] },
@@ -244,6 +247,7 @@ describe('02 · Venta · secciones y premios', () => {
     photo_url: null,
     description: null,
     category: 'Helados',
+    category_id: 'cat-ice',
     prize_eligible: false,
     option_groups: [],
   };
@@ -251,10 +255,10 @@ describe('02 · Venta · secciones y premios', () => {
 
   it('shows one heading per category, in the order the API sends', async () => {
     mockApi({
-      'GET /api/op/products': () =>
+      'GET /api/admin/products': () =>
         json([withCategory(PRODUCTS[0]!, 'Bebidas'), withCategory(PRODUCTS[1]!, 'Bebidas'), ICE]),
     });
-    renderRoutes([{ path: '/op', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/op' });
+    renderRoutes([{ path: '/admin', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/admin' });
     const headings = await screen.findAllByRole('heading', { level: 2 });
     expect(headings.map((h) => h.textContent)).toEqual(['Bebidas', 'Helados']);
     const helados = screen.getByRole('region', { name: 'Helados' });
@@ -263,8 +267,8 @@ describe('02 · Venta · secciones y premios', () => {
   });
 
   it('without categories there are no headings', async () => {
-    mockApi({ 'GET /api/op/products': () => json(PRODUCTS) });
-    renderRoutes([{ path: '/op', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/op' });
+    mockApi({ 'GET /api/admin/products': () => json(PRODUCTS) });
+    renderRoutes([{ path: '/admin', element: <SaleScreen workday={WORKDAY} /> }], { pathname: '/admin' });
     await screen.findByRole('button', { name: /Matcha latte/ });
     expect(screen.queryByRole('heading', { level: 2 })).not.toBeInTheDocument();
   });
@@ -291,17 +295,57 @@ describe('02 · Venta · secciones y premios', () => {
             expires_at: '2026-12-30T15:00:00Z',
             value: 10,
             max_value_cop: 16000,
+            category_id: null,
           },
         ],
       },
     });
     renderRoutes(
-      [{ path: '/op', element: <ApplyPrizeSheet open onClose={() => {}} products={[...PRODUCTS, ICE]} /> }],
-      { pathname: '/op' },
+      [{ path: '/admin', element: <ApplyPrizeSheet open onClose={() => {}} products={[...PRODUCTS, ICE]} /> }],
+      { pathname: '/admin' },
     );
-    const drinks = await screen.findByRole('radiogroup', { name: 'Bebida' });
+    const drinks = await screen.findByRole('radiogroup', { name: 'Producto' });
     expect(drinks).toHaveTextContent('Cold brew');
     expect(drinks).not.toHaveTextContent('Paleta');
+  });
+
+  it('a prize of a category targets only products of that category', async () => {
+    const takesPrizes = { ...ICE, prize_eligible: true };
+    const drink = { ...PRODUCTS[1]!, category: 'Bebidas', category_id: 'cat-drinks' };
+    useCart.setState({
+      lines: {
+        ice: { productId: 'ice', optionIds: [], qty: 1 },
+        p2: { productId: 'p2', optionIds: [], qty: 1 },
+      },
+      customer: {
+        id: 'c1',
+        alias: 'Ana',
+        phone_last4: '4567',
+        purchases: 1,
+        milestone_every: 5,
+        active_prizes: [
+          {
+            id: 'a1',
+            name: 'Helado gratis',
+            short_label: 'Helado gratis',
+            type: 'free_item',
+            awarded_at: '2026-10-01T15:00:00Z',
+            expires_at: '2026-12-30T15:00:00Z',
+            value: 0,
+            max_value_cop: 5000,
+            category_id: 'cat-ice',
+          },
+        ],
+      },
+    });
+    renderRoutes(
+      [{ path: '/admin', element: <ApplyPrizeSheet open onClose={() => {}} products={[drink, takesPrizes]} /> }],
+      { pathname: '/admin' },
+    );
+    const targets = await screen.findByRole('radiogroup', { name: 'Producto' });
+    expect(targets).toHaveTextContent('Paleta');
+    expect(targets).not.toHaveTextContent('Cold brew');
+    expect(screen.getByRole('button', { name: 'Aplicar · −$5.000' })).toBeEnabled();
   });
 });
 
@@ -309,23 +353,23 @@ describe('03 · Cobrar (idempotencia)', () => {
   it('double tap sends ONE request; a retry after an error reuses the same Idempotency-Key', async () => {
     let fail = true;
     const api = mockApi({
-      'POST /api/op/sales': async () => {
+      'POST /api/admin/sales': async () => {
         await new Promise((r) => setTimeout(r, 30));
         if (fail) return json({ error: { code: 'internal_error', message: 'x', extra: {} } }, 500);
         return json(sale(), 201);
       },
-      'GET /api/op/workdays/current': () => json(WORKDAY),
+      'GET /api/admin/workdays/current': () => json(WORKDAY),
     });
     useCart.setState({ lines: { p1: { productId: 'p1', optionIds: [], qty: 2 } } });
 
     renderRoutes(
-      [{ path: '/op', element: <CheckoutSheet open onClose={() => {}} products={PRODUCTS} /> }],
-      { pathname: '/op' },
+      [{ path: '/admin', element: <CheckoutSheet open onClose={() => {}} products={PRODUCTS} /> }],
+      { pathname: '/admin' },
     );
     const pay = await screen.findByRole('button', { name: 'Cobrar y mostrar QR' });
     fireEvent.click(pay);
     fireEvent.click(pay);
-    await waitFor(() => expect(api.count('POST /api/op/sales')).toBe(1));
+    await waitFor(() => expect(api.count('POST /api/admin/sales')).toBe(1));
     await screen.findByRole('button', { name: 'Cobrar y mostrar QR' }); // loading finished
     expect(qtys()).toEqual({ p1: 2 }); // cart kept on error
     const firstKey = api.calls[0]!.headers.get('Idempotency-Key');
@@ -333,7 +377,7 @@ describe('03 · Cobrar (idempotencia)', () => {
 
     fail = false;
     await userEvent.click(screen.getByRole('button', { name: 'Cobrar y mostrar QR' }));
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/op/sale/s1/qr'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/admin/sale/s1/qr'));
     const posts = api.calls.filter((r) => r.method === 'POST');
     expect(posts).toHaveLength(2);
     expect(posts[1]!.headers.get('Idempotency-Key')).toBe(firstKey);
@@ -345,14 +389,14 @@ describe('03 · Cobrar (idempotencia)', () => {
 
   it('"Cobrar sin cliente" registers an anonymous sale and stays on Venta (no QR)', async () => {
     const api = mockApi({
-      'POST /api/op/sales': () => json(sale({ total_cop: 28000 }), 201),
-      'POST /api/op/events': () => new Response(null, { status: 204 }),
+      'POST /api/admin/sales': () => json(sale({ total_cop: 28000 }), 201),
+      'POST /api/admin/events': () => new Response(null, { status: 204 }),
     });
     useCart.setState({ lines: { p1: { productId: 'p1', optionIds: [], qty: 2 } } });
     renderRoutes(
       [
         {
-          path: '/op',
+          path: '/admin',
           element: (
             <>
               <CheckoutSheet open onClose={() => {}} products={PRODUCTS} />
@@ -361,18 +405,18 @@ describe('03 · Cobrar (idempotencia)', () => {
           ),
         },
       ],
-      { pathname: '/op' },
+      { pathname: '/admin' },
     );
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cobrar sin cliente' }));
     await waitFor(() => expect(useCart.getState().lines).toEqual({}));
-    expect(api.count('POST /api/op/sales')).toBe(1);
-    const body = await api.calls.find((r) => r.url.endsWith('/api/op/sales'))!.json();
+    expect(api.count('POST /api/admin/sales')).toBe(1);
+    const body = await api.calls.find((r) => r.url.endsWith('/api/admin/sales'))!.json();
     expect(body).toMatchObject({ customer_id: null, prize_award_id: null });
     // Never went to the QR screen.
     expect(screen.queryByTestId('path')).not.toBeInTheDocument();
     expect(await screen.findByText('Venta registrada sin cliente · $28.000')).toBeInTheDocument();
-    await waitFor(() => expect(api.count('POST /api/op/events')).toBe(1));
+    await waitFor(() => expect(api.count('POST /api/admin/events')).toBe(1));
   });
 
   it('with a customer there is no anonymous option', async () => {
@@ -380,8 +424,8 @@ describe('03 · Cobrar (idempotencia)', () => {
       lines: { p1: { productId: 'p1', optionIds: [], qty: 1 } },
       customer: { id: 'c1', alias: 'Ana', phone_last4: '4567', purchases: 1, milestone_every: 5, active_prizes: [] },
     });
-    renderRoutes([{ path: '/op', element: <CheckoutSheet open onClose={() => {}} products={PRODUCTS} /> }], {
-      pathname: '/op',
+    renderRoutes([{ path: '/admin', element: <CheckoutSheet open onClose={() => {}} products={PRODUCTS} /> }], {
+      pathname: '/admin',
     });
     expect(await screen.findByRole('button', { name: 'Cobrar $14.000' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Cobrar sin cliente' })).not.toBeInTheDocument();
@@ -412,25 +456,25 @@ describe('04 · QR de venta (sondeo en segundo plano)', () => {
     </>
   );
   const routes = [
-    { path: '/op/sale/:saleId/qr', element: shell(<SaleQrPage />) },
-    { path: '/op', element: shell(<Where />) },
+    { path: '/admin/sale/:saleId/qr', element: shell(<SaleQrPage />) },
+    { path: '/admin', element: shell(<Where />) },
   ];
 
   it('when the customer scans, returns to Venta with a notification and stops polling', async () => {
     let statusCalls = 0;
     const api = mockApi({
-      'GET /api/op/sales/s1': () => json(sale()),
-      'GET /api/op/sales/s1/status': () => {
+      'GET /api/admin/sales/s1': () => json(sale()),
+      'GET /api/admin/sales/s1/status': () => {
         statusCalls++;
         return statusCalls < 2 ? json({ status: 'paid', customer: null }) : json(CLAIMED);
       },
-      'GET /api/op/customers/c1': () => json(DETAIL),
-      'POST /api/op/events': () => new Response(null, { status: 204 }),
+      'GET /api/admin/customers/c1': () => json(DETAIL),
+      'POST /api/admin/events': () => new Response(null, { status: 204 }),
     });
 
-    renderRoutes(routes, { pathname: '/op/sale/s1/qr' });
+    renderRoutes(routes, { pathname: '/admin/sale/s1/qr' });
     expect(await screen.findByText(/Esperando escaneo/)).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent(/^\/op$/), {
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent(/^\/admin$/), {
       timeout: 6000,
     });
 
@@ -438,25 +482,25 @@ describe('04 · QR de venta (sondeo en segundo plano)', () => {
     expect(await screen.findByText('¡Giro desbloqueado!')).toBeInTheDocument();
     expect(usePendingSales.getState().items).toEqual({});
 
-    const settled = api.count('GET /api/op/sales/s1/status');
+    const settled = api.count('GET /api/admin/sales/s1/status');
     await new Promise((r) => setTimeout(r, 2500));
-    expect(api.count('GET /api/op/sales/s1/status')).toBe(settled);
-    expect(api.calls.some((r) => r.method === 'POST' && r.url.endsWith('/api/op/events'))).toBe(true);
+    expect(api.count('GET /api/admin/sales/s1/status')).toBe(settled);
+    expect(api.calls.some((r) => r.method === 'POST' && r.url.endsWith('/api/admin/events'))).toBe(true);
   }, 15_000);
 
   it('"Siguiente venta" keeps watching: a later scan still notifies on Venta', async () => {
     let scanned = false;
     mockApi({
-      'GET /api/op/sales/s1': () => json(sale()),
-      'GET /api/op/sales/s1/status': () =>
+      'GET /api/admin/sales/s1': () => json(sale()),
+      'GET /api/admin/sales/s1/status': () =>
         json(scanned ? CLAIMED : { status: 'paid', customer: null }),
-      'GET /api/op/customers/c1': () => json(DETAIL),
-      'POST /api/op/events': () => new Response(null, { status: 204 }),
+      'GET /api/admin/customers/c1': () => json(DETAIL),
+      'POST /api/admin/events': () => new Response(null, { status: 204 }),
     });
 
-    renderRoutes(routes, { pathname: '/op/sale/s1/qr' });
+    renderRoutes(routes, { pathname: '/admin/sale/s1/qr' });
     await userEvent.click(await screen.findByRole('button', { name: 'Siguiente venta' }));
-    expect(screen.getByTestId('path')).toHaveTextContent(/^\/op$/);
+    expect(screen.getByTestId('path')).toHaveTextContent(/^\/admin$/);
     expect(usePendingSales.getState().items.s1).toBeDefined();
 
     scanned = true;
@@ -480,38 +524,38 @@ describe('06 · Buscar cliente', () => {
 
   it('searches after 4 digits and links the sale (?saleId=)', async () => {
     const api = mockApi({
-      'GET /api/op/customers/search': (req) => json(new URL(req.url).searchParams.get('last4') === '4567' ? RESULTS : []),
-      'POST /api/op/sales/s1/link': () => json({ card: {}, counted: true, new_spins: [] }),
+      'GET /api/admin/customers/search': (req) => json(new URL(req.url).searchParams.get('last4') === '4567' ? RESULTS : []),
+      'POST /api/admin/sales/s1/link': () => json({ card: {}, counted: true, new_spins: [] }),
     });
-    renderRoutes([{ path: '/op/search', element: <SearchPage /> }], { pathname: '/op/search', search: '?saleId=s1' });
+    renderRoutes([{ path: '/admin/search', element: <SearchPage /> }], { pathname: '/admin/search', search: '?saleId=s1' });
     await typeDigits('456');
-    expect(api.count('GET /api/op/customers/search')).toBe(0);
+    expect(api.count('GET /api/admin/customers/search')).toBe(0);
     await typeDigits('7');
 
     expect(await screen.findByText('Julián')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /Ana/ }));
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/op/sale/s1'));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/admin/sale/s1'));
     const link = api.calls.find((r) => r.method === 'POST')!;
     expect(await link.json()).toEqual({ customer_id: 'c1' });
   });
 
   it('shows the empty state', async () => {
-    mockApi({ 'GET /api/op/customers/search': () => json([]) });
-    renderRoutes([{ path: '/op/search', element: <SearchPage /> }], { pathname: '/op/search' });
+    mockApi({ 'GET /api/admin/customers/search': () => json([]) });
+    renderRoutes([{ path: '/admin/search', element: <SearchPage /> }], { pathname: '/admin/search' });
     await typeDigits('0000');
     expect(await screen.findByText('Nadie con esos 4 dígitos.')).toBeInTheDocument();
   });
 
   it('attach mode puts the customer in the cart and returns to the sale', async () => {
     mockApi({
-      'GET /api/op/customers/search': () => json(RESULTS),
-      'GET /api/op/customers/c1': () =>
+      'GET /api/admin/customers/search': () => json(RESULTS),
+      'GET /api/admin/customers/c1': () =>
         json({ id: 'c1', alias: 'Ana', phone_last4: '4567', purchases: 4, milestone_every: 5, active_prizes: [], sales: [] }),
     });
-    renderRoutes([{ path: '/op/search', element: <SearchPage /> }], { pathname: '/op/search', search: '?mode=attach' });
+    renderRoutes([{ path: '/admin/search', element: <SearchPage /> }], { pathname: '/admin/search', search: '?mode=attach' });
     await typeDigits('4567');
     await userEvent.click(await screen.findByRole('button', { name: /Ana/ }));
-    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent(/^\/op$/));
+    await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent(/^\/admin$/));
     expect(useCart.getState().customer).toMatchObject({ id: 'c1', alias: 'Ana', foundBy: '4567' });
   });
 });
@@ -604,14 +648,14 @@ describe('Jornada · detalle', () => {
 
   it("shows what was sold and every sale; today's closed jornada can be reopened", async () => {
     const api = mockApi({
-      'GET /api/op/stats/workdays/w1': () => json(STATS),
-      'GET /api/op/workdays/w1/sales': () =>
+      'GET /api/admin/stats/workdays/w1': () => json(STATS),
+      'GET /api/admin/workdays/w1/sales': () =>
         json({ items: SALES, next_cursor: null, total: 2, voided: 1 }),
-      'GET /api/op/workdays/current': () => json(null),
-      'POST /api/op/workdays/open': () => json({ ...WORKDAY, local_date: todayYmd() }),
+      'GET /api/admin/workdays/current': () => json(null),
+      'POST /api/admin/workdays/open': () => json({ ...WORKDAY, local_date: todayYmd() }),
     });
-    renderRoutes([{ path: '/op/workdays/:workdayId', element: <WorkdayDetailPage /> }], {
-      pathname: '/op/workdays/w1',
+    renderRoutes([{ path: '/admin/workdays/:workdayId', element: <WorkdayDetailPage /> }], {
+      pathname: '/admin/workdays/w1',
     });
 
     expect(await screen.findByText('Productos vendidos')).toBeInTheDocument();
@@ -633,26 +677,26 @@ describe('Jornada · detalle', () => {
     expect(screen.getByText('2× Matcha latte')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /2× Matcha latte/ })).toHaveAttribute(
       'href',
-      '/op/sale/s1',
+      '/admin/sale/s1',
     );
 
     await userEvent.click(await screen.findByRole('button', { name: 'Reabrir jornada' }));
-    await waitFor(() => expect(api.count('POST /api/op/workdays/open')).toBe(1));
+    await waitFor(() => expect(api.count('POST /api/admin/workdays/open')).toBe(1));
   });
 
   it('loads the sales a page at a time', async () => {
     const api = mockApi({
-      'GET /api/op/stats/workdays/w1': () => json(STATS),
-      'GET /api/op/workdays/w1/sales': (req) => {
+      'GET /api/admin/stats/workdays/w1': () => json(STATS),
+      'GET /api/admin/workdays/w1/sales': (req) => {
         const cursor = new URL(req.url).searchParams.get('cursor');
         return cursor === 'next'
           ? json({ items: SALES.slice(2), next_cursor: null, total: 2, voided: 1 })
           : json({ items: SALES.slice(0, 2), next_cursor: 'next', total: 2, voided: 1 });
       },
-      'GET /api/op/workdays/current': () => json(null),
+      'GET /api/admin/workdays/current': () => json(null),
     });
-    renderRoutes([{ path: '/op/workdays/:workdayId', element: <WorkdayDetailPage /> }], {
-      pathname: '/op/workdays/w1',
+    renderRoutes([{ path: '/admin/workdays/:workdayId', element: <WorkdayDetailPage /> }], {
+      pathname: '/admin/workdays/w1',
     });
 
     expect(await screen.findByText('Ana · 4567')).toBeInTheDocument();
@@ -671,7 +715,7 @@ describe('Ventas por hora', () => {
     renderRoutes(
       [
         {
-          path: '/op',
+          path: '/admin',
           element: (
             <HourlyChart
               hourly={[
@@ -683,7 +727,7 @@ describe('Ventas por hora', () => {
           ),
         },
       ],
-      { pathname: '/op' },
+      { pathname: '/admin' },
     );
     const status = screen.getByText('Mejor hora').closest('[role="status"]')!;
     expect(status).toHaveTextContent('12–1 pm');
@@ -699,6 +743,9 @@ describe('M3 · Redimir premio en venta cobrada', () => {
     type: 'extra_item',
     awarded_at: '2026-10-13T18:55:00Z',
     expires_at: '2027-01-11T18:55:00Z',
+    value: 0,
+    max_value_cop: null,
+    category_id: null,
   };
   const linked = sale({
     status: 'claimed',
@@ -719,7 +766,7 @@ describe('M3 · Redimir premio en venta cobrada', () => {
   it('extra item: no drink picker, sends no product, keeps its content while closing', async () => {
     let body: unknown = null;
     mockApi({
-      'POST /api/op/sales/s1/redeem-prize': async (req) => {
+      'POST /api/admin/sales/s1/redeem-prize': async (req) => {
         body = await req.json();
         return json(linked);
       },
@@ -735,7 +782,7 @@ describe('M3 · Redimir premio en venta cobrada', () => {
         />
       );
     }
-    renderRoutes([{ path: '/op/sale/s1', element: <Harness /> }], { pathname: '/op/sale/s1' });
+    renderRoutes([{ path: '/admin/sale/s1', element: <Harness /> }], { pathname: '/admin/sale/s1' });
 
     expect(await screen.findByText(/Se agrega gratis a su compra de hoy/)).toBeInTheDocument();
     expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();

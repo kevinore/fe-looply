@@ -15,11 +15,11 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <RouteError />,
     children: [
-      { index: true, loader: () => redirect('/c') },
+      { index: true, loader: () => redirect('/client') },
 
       // Client zone — light and fast. Never imports operator code.
       {
-        path: 'c',
+        path: 'client',
         element: <CustomerLayout />,
         children: [
           { index: true, lazy: page(() => import('@/features/customer/pages/CardPage')) },
@@ -38,9 +38,9 @@ export const router = createBrowserRouter([
       },
 
       // Operator zone — loaded on demand only.
-      { path: 'op/login', lazy: page(() => import('@/features/operator/pages/LoginPage')) },
+      { path: 'admin/login', lazy: page(() => import('@/features/operator/pages/LoginPage')) },
       {
-        path: 'op',
+        path: 'admin',
         lazy: async () => ({ Component: (await import('@/features/operator/OperatorLayout')).OperatorLayout }),
         children: [
           { index: true, lazy: page(() => import('@/features/operator/pages/HomePage')) },
@@ -48,6 +48,7 @@ export const router = createBrowserRouter([
           { path: 'sale/:saleId', lazy: page(() => import('@/features/operator/pages/SaleDetailPage')) },
           { path: 'search', lazy: page(() => import('@/features/operator/pages/SearchPage')) },
           { path: 'prizes', lazy: page(() => import('@/features/operator/pages/PrizesPage')) },
+          { path: 'wheel', lazy: page(() => import('@/features/operator/pages/WheelEditorPage')) },
           { path: 'summary', lazy: page(() => import('@/features/operator/pages/SummaryPage')) },
           { path: 'history', lazy: page(() => import('@/features/operator/pages/HistoryPage')) },
           { path: 'workdays/:workdayId', lazy: page(() => import('@/features/operator/pages/WorkdayDetailPage')) },
@@ -62,7 +63,7 @@ export const router = createBrowserRouter([
 
 setAuthErrorHandler(() => {
   const { pathname, search } = window.location;
-  if (pathname.startsWith('/op') && !pathname.startsWith('/op/login')) {
-    void router.navigate(`/op/login?next=${encodeURIComponent(pathname + search)}`, { replace: true });
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    void router.navigate(`/admin/login?next=${encodeURIComponent(pathname + search)}`, { replace: true });
   }
 });

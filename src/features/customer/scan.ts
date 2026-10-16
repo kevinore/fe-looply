@@ -1,5 +1,5 @@
 /**
- * Accepts only QR codes of this app: same origin and /c/claim/<token>.
+ * Accepts only QR codes of this app: same origin and /client/claim/<token>.
  * Returns the token or null.
  */
 export function claimTokenFromQr(data: string, origin: string): string | null {
@@ -10,6 +10,6 @@ export function claimTokenFromQr(data: string, origin: string): string | null {
     return null;
   }
   if (url.origin !== origin) return null;
-  const m = /^\/c\/claim\/([A-Za-z0-9_-]+)\/?$/.exec(url.pathname);
+  const m = /^\/client\/claim\/([A-Za-z0-9_-]+)\/?$/.exec(url.pathname);
   return m ? m[1]! : null;
 }

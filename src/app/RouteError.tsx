@@ -12,7 +12,7 @@ export function RouteError() {
       </p>
       <div className="grid w-full max-w-xs gap-2">
         {!notFound && <Button onClick={() => location.reload()}>Recargar</Button>}
-        <ButtonLink to="/c" variant={notFound ? 'primary' : 'ghost'}>
+        <ButtonLink to="/client" variant={notFound ? 'primary' : 'ghost'}>
           Ir al inicio
         </ButtonLink>
       </div>

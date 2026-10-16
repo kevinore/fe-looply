@@ -13,7 +13,7 @@ const PRODUCTS = 'public/products';
 // Soft brand background used behind icons (the logo is transparent).
 const ICON_BG = '#FBEDF3';
 
-const MASCOTS = ['mascot-drink', 'mascot-matcha', 'mascot-counter'];
+const MASCOTS = ['mascot-drink', 'mascot-matcha', 'mascot-counter', 'mascot-blender'];
 const MASCOT_WIDTHS = [320, 640, 960];
 
 await mkdir(BRAND, { recursive: true });
