@@ -11,7 +11,7 @@ import { Button, Screen } from '@/ui';
 import { InstallSteps } from '@/ui/InstallSteps';
 
 /**
- * Install the operator app on this device (iPad, iPhone, Android). Outside the
+ * Home-screen shortcut for the operator app on this device (iPad, iPhone, Android). Outside the
  * login guard, so it works before signing in. admin.html links the operator
  * manifest, so the icon opens /admin, not the customer app.
  */
@@ -41,7 +41,7 @@ export default function InstallPage() {
           <div className="mx-auto grid w-full max-w-sm gap-1">
             {deferred ? (
               <Button variant="dark" onClick={install} loading={busy}>
-                Instalar app del operador
+                Agregar a mi pantalla de inicio
               </Button>
             ) : (
               <Button variant="dark" onClick={leave}>
@@ -60,11 +60,11 @@ export default function InstallPage() {
           <span className="flex size-24 items-center justify-center rounded-3xl bg-white p-2 shadow-card">
             <Logo size={80} className="size-full" />
           </span>
-          <h1 className="text-[2.3rem] leading-tight font-semibold">Instala la app del operador</h1>
+          <h1 className="text-[2.3rem] leading-tight font-semibold">Crea un acceso directo en este dispositivo</h1>
           <p className="max-w-sm text-brand-muted">
             {supported || deferred
-              ? 'Queda un ícono en la pantalla de inicio que abre directo en Venta, a pantalla completa. Si te pide ingresar, hazlo una vez dentro de la app.'
-              : 'Abre esta página en la tablet o el celular del punto de venta para instalarla allí.'}
+              ? 'Queda un ícono en la pantalla de inicio que abre directo en tu panel de admin, a pantalla completa. No descargas nada: es esta misma página con su ícono. Si te pide ingresar, hazlo una vez desde el ícono.'
+              : 'Abre esta página en la tablet o el celular del punto de venta para crear allí el acceso directo.'}
           </p>
           <InstallSteps hasPrompt={!!deferred} />
         </div>

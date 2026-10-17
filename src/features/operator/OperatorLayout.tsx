@@ -5,6 +5,7 @@ import { isApiError } from '@/api/errors';
 import type { Branding } from '@/api/types';
 import { BrandProvider } from '@/brand/BrandProvider';
 import { ErrorState, LoadingState, Screen } from '@/ui';
+import { HomeScreenBar } from '@/ui/HomeScreenBar';
 import { ClaimNotices } from './ClaimNotices';
 import { adminMeQuery } from './queries';
 import { SaleWatcher } from './SaleWatcher';
@@ -49,6 +50,8 @@ export function OperatorLayout() {
   const business = me.data.business;
   return (
     <BrandProvider branding={business.branding as Branding} name={business.name}>
+      {/* Not over the sale QR: that screen is for the customer. */}
+      {!/^\/admin\/sale\/[^/]+\/qr/.test(location.pathname) && <HomeScreenBar zone="admin" name={business.name} />}
       <Outlet />
       {/* Pending QR scans are watched from every screen, so selling never waits. */}
       <SaleWatcher />

@@ -68,7 +68,7 @@ export function AdminMenuButton() {
           )}
           {canInstall() && (
             <Link to="/admin/install" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
-              <Icon name="download" size={20} /> Instalar en este dispositivo
+              <Icon name="plusSquare" size={20} /> Acceso directo en este dispositivo
             </Link>
           )}
           <Button variant="ghost" loading={busy} onClick={doLogout}>

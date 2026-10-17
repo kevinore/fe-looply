@@ -61,7 +61,7 @@ function installSteps(hasPrompt: boolean): Step[] {
         icon: 'plusSquare',
         text: (
           <>
-            Elige <strong>Instalar app</strong> o <strong>Agregar a la pantalla principal</strong>
+            Elige <strong>Agregar a la pantalla principal</strong> (en algunos teléfonos dice <strong>Instalar app</strong>)
           </>
         ),
       },
