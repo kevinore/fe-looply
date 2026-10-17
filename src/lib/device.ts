@@ -25,6 +25,11 @@ export function isStandalone(): boolean {
   return window.matchMedia?.('(display-mode: standalone)').matches === true || nav.standalone === true;
 }
 
+/** Whether this device can put the app on its home screen (and hasn't yet). */
+export function canInstall(): boolean {
+  return !isStandalone() && (isIOS() || isAndroid());
+}
+
 export function canVibrate(): boolean {
   return typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
 }

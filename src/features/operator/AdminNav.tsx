@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { BottomNav, BottomSheet, Button, buttonClass, Icon, toast } from '@/ui';
 import { errorMessage } from '@/api/errors';
+import { canInstall } from '@/lib/device';
 import { useCart } from './cart';
 import { useClaimNotices } from './notifications';
 import { usePendingSales } from './pendingSales';
@@ -63,6 +64,11 @@ export function AdminMenuButton() {
           {isOwner && (
             <Link to="/admin/wheel" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
               <Icon name="gift" size={20} /> Ruleta de premios
+            </Link>
+          )}
+          {canInstall() && (
+            <Link to="/admin/install" className={buttonClass('secondary')} onClick={() => setOpen(false)}>
+              <Icon name="download" size={20} /> Instalar en este dispositivo
             </Link>
           )}
           <Button variant="ghost" loading={busy} onClick={doLogout}>

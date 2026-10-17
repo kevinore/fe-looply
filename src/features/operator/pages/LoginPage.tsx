@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, type FormEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { api, unwrap } from '@/api/client';
 import { errorMessage } from '@/api/errors';
 import type { Branding } from '@/api/types';
@@ -8,7 +8,8 @@ import { keys } from '@/app/keys';
 import { BrandProvider } from '@/brand/BrandProvider';
 import { Logo } from '@/brand/Mascot';
 import { businessQuery } from '@/features/customer/queries';
-import { Button, Field, Screen } from '@/ui';
+import { Button, Field, Icon, Screen } from '@/ui';
+import { canInstall } from '@/lib/device';
 import { useOperatorManifest } from '../OperatorLayout';
 
 /** Only allow internal operator paths as `next` (no open redirects). */
@@ -78,6 +79,14 @@ export default function LoginPage() {
               Ingresar
             </Button>
           </form>
+          {canInstall() && (
+            <Link
+              to="/admin/install"
+              className="mx-auto mt-5 flex w-fit items-center gap-2 text-sm font-semibold underline underline-offset-2"
+            >
+              <Icon name="download" size={18} /> Instalar en este dispositivo
+            </Link>
+          )}
         </div>
       </Screen>
     </BrandProvider>

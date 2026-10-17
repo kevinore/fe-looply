@@ -5,7 +5,7 @@
   "description": "Tu tarjeta de compras y premios.",
   "lang": "es-CO",
   "start_url": "/client",
-  "scope": "/",
+  "scope": "/client",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FBEDF3",

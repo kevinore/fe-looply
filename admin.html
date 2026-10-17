@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#E682AC" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- Operator zone: its own manifest, so "Add to Home Screen" installs the operator app. -->
+    <link rel="manifest" href="/manifest-admin.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Operador" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png" />
+    <title></title>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Painted before JS runs so the first frame is never blank. -->
+      <div class="boot-splash" aria-hidden="true"></div>
+    </div>
+    <noscript>Activa JavaScript para usar esta aplicación.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -40,6 +40,7 @@ export const router = createBrowserRouter([
 
       // Operator zone — loaded on demand only.
       { path: 'admin/login', lazy: page(() => import('@/features/operator/pages/LoginPage')) },
+      { path: 'admin/install', lazy: page(() => import('@/features/operator/pages/InstallPage')) },
       {
         path: 'admin',
         lazy: async () => ({ Component: (await import('@/features/operator/OperatorLayout')).OperatorLayout }),

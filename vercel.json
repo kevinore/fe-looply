@@ -5,6 +5,8 @@
       "source": "/api/:path*",
       "destination": "https://be-looply-production.up.railway.app/api/:path*"
     },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin/:path*", "destination": "/admin.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -29,7 +31,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "source": "/(sw\\.js|workbox-.*\\.js|index\\.html|manifest\\.webmanifest|manifest-admin\\.webmanifest)",
+      "source": "/(sw\\.js|workbox-.*\\.js|index\\.html|admin\\.html|manifest\\.webmanifest|manifest-admin\\.webmanifest)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     }
   ]

@@ -6,6 +6,7 @@ import { Logo, Mascot } from '@/brand/Mascot';
 import { shortWeekdayDate } from '@/lib/dates';
 import { sendEvent } from '@/lib/events';
 import { EmptyState, ErrorState, Eyebrow, Icon, LoadingState, ProgressSegments, Screen } from '@/ui';
+import { canInstall } from '@/lib/device';
 import { CustomerNav } from '../components/CustomerNav';
 import { NoSession } from '../components/NoSession';
 import { PrizeRow } from '../components/PrizeRow';
@@ -119,6 +120,14 @@ export default function CardPage() {
         )}
       </section>
 
+      {canInstall() && (
+        <Link
+          to="/client/install"
+          className="mx-auto mt-6 flex items-center gap-2 rounded-full bg-brand-field px-4 py-2.5 text-sm font-semibold active:brightness-95"
+        >
+          <Icon name="download" size={18} /> Guardar en mi pantalla de inicio
+        </Link>
+      )}
       <Link to="/client/privacy" className="mx-auto mt-auto py-4 text-xs text-brand-muted underline underline-offset-2">
         Política de tratamiento de datos
       </Link>

@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig, type Connect, type Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Backend for the dev/preview proxy. Override with API_TARGET=http://localhost:8001
@@ -11,8 +11,25 @@ const API_TARGET = process.env.API_TARGET ?? 'http://localhost:8000';
 // Tunnels for testing on a real phone over HTTPS (ngrok). Leading dot = any subdomain.
 const TUNNEL_HOSTS = ['.ngrok-free.app', '.ngrok.app', '.ngrok.io'];
 
+/** The operator zone has its own HTML (admin.html): its manifest installs the operator app. */
+const isAdminPage = (url = '') => /^\/admin(\/|\?|$)/.test(url) && !/\.\w+(\?|$)/.test(url.split('?')[0]!);
+
+/** Dev and preview: serve admin.html for /admin routes, like the Vercel rewrites do. */
+function adminEntry(): Plugin {
+  const rewrite: Connect.NextHandleFunction = (req, _res, next) => {
+    if (req.method === 'GET' && isAdminPage(req.url)) req.url = '/admin.html';
+    next();
+  };
+  return {
+    name: 'admin-entry',
+    configureServer: (server) => void server.middlewares.use(rewrite),
+    configurePreviewServer: (server) => void server.middlewares.use(rewrite),
+  };
+}
+
 export default defineConfig({
   plugins: [
+    adminEntry(),
     react(),
     tailwindcss(),
     VitePWA({
@@ -23,7 +40,8 @@ export default defineConfig({
       manifest: false, // own manifests in /public (client and operator)
       workbox: {
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        // /admin pages come from the network (admin.html, with the operator manifest).
+        navigateFallbackDenylist: [/^\/api\//, /^\/admin(\/|$)/],
         // Precache only the client shell: customers never download operator code.
         // Other font subsets load on demand through unicode-range.
         globPatterns: [
@@ -80,6 +98,10 @@ export default defineConfig({
     target: ['es2022', 'safari16', 'chrome111', 'firefox115'],
     cssTarget: ['safari16', 'chrome111', 'firefox115'],
     rolldownOptions: {
+      input: {
+        index: fileURLToPath(new URL('./index.html', import.meta.url)),
+        admin: fileURLToPath(new URL('./admin.html', import.meta.url)),
+      },
       output: {
         // Zone prefix lets the service worker precache only the client zone.
         chunkFileNames: (chunk) => {

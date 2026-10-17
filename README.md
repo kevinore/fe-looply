@@ -47,6 +47,11 @@ Design rules: every business color comes from the API (`branding.colors`) as CSS
 tints and AA-safe text shades are derived with `color-mix` in `src/index.css`. Never write the
 business name in code (ESLint enforces it).
 
+Two installable apps: `index.html` links the customer manifest (`/client`) and `admin.html` the operator
+manifest (`/admin`). Vercel (`vercel.json`), the dev/preview server (`vite.config.ts`) and the service worker
+serve `admin.html` for every `/admin` URL, so "Add to Home Screen" installs the right app. Install help:
+`/client/install` and `/admin/install`.
+
 Performance: operator code is only in `admin-*` chunks, which the service worker never precaches, so
 customers never download it. The JS for `/client/claim/:token` is ≈123 KB gzip (budget 150 KB).
 
